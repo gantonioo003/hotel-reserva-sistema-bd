@@ -32,24 +32,24 @@ Incluindo modelagem conceitual, lógica, scripts SQL e uma interface funcional e
 
 ## Estrutura do Projeto
 
-hotel-reserva-sistema-bd/
-│
-├── docs/
-│   ├── mini_mundo.md             # Descrição do mini mundo
-│   ├── modelo_conceitual.png     # Modelo conceitual (MER)
-│   └── modelo_logico.md          # Modelo lógico relacional
-│
-├── sql/
-│   ├── script_criacao.sql        # Script de criação das tabelas
-│   └── script_insercao.sql       # Script de inserção de dados
-│
-├── interface_java/
-│   └── [arquivos Java]           # CRUD simples usando JDBC
-│
-├── relatorios/
-│   └── relatorio_v1.pdf          # Relatório parcial do módulo 1
-│
-└── README.md                     # Este arquivo
+*Diretório raiz: hotel-reserva-sistema-bd/*
+
+- docs/  
+  - mini_mundo.md – Descrição do mini mundo  
+  - modelo_conceitual.png – Modelo conceitual (MER)  
+  - modelo_logico.md – Modelo lógico relacional
+
+- sql/  
+  - script_criacao.sql – Script de criação das tabelas (MySQL)  
+  - script_insercao.sql – Script de inserção de dados fictícios
+
+- interface_java/  
+  - Arquivos da interface CRUD feita em Java (com JDBC puro)
+
+- relatorios/  
+  - relatorio_v1.pdf – Relatório da primeira etapa do projeto
+
+- README.md – Este arquivo com instruções do projeto
 
 ## Módulo 1 – Entregas
 
