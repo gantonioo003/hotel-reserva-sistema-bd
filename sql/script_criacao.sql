@@ -1,88 +1,115 @@
+USE hotel;
+
+-- Tabela Pessoa
 CREATE TABLE Pessoa (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     cpf CHAR(11) UNIQUE NOT NULL,
     data_nascimento DATE NOT NULL,
     rua VARCHAR(100),
     numero VARCHAR(10),
     cidade VARCHAR(50),
-    estado VARCHAR(2),
+    estado CHAR(2),
     cep CHAR(8)
 );
 
+-- Tabela Hospede
 CREATE TABLE Hospede (
-    id_pessoa INTEGER PRIMARY KEY REFERENCES Pessoa(id)
+    id_pessoa INT PRIMARY KEY,
+    FOREIGN KEY (id_pessoa) REFERENCES Pessoa(id)
 );
 
+-- Tabela Funcionario
 CREATE TABLE Funcionario (
-    id_pessoa INTEGER PRIMARY KEY REFERENCES Pessoa(id),
-    supervisor_id INTEGER REFERENCES Funcionario(id_pessoa)
+    id_pessoa INT PRIMARY KEY,
+    supervisor_id INT,
+    FOREIGN KEY (id_pessoa) REFERENCES Pessoa(id),
+    FOREIGN KEY (supervisor_id) REFERENCES Funcionario(id_pessoa)
 );
 
+-- Tabela Telefone
 CREATE TABLE Telefone (
-    id SERIAL PRIMARY KEY,
-    id_pessoa INTEGER REFERENCES Pessoa(id),
-    numero VARCHAR(15) NOT NULL
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_pessoa INT,
+    numero VARCHAR(15) NOT NULL,
+    FOREIGN KEY (id_pessoa) REFERENCES Pessoa(id)
 );
 
+-- Tabela Quarto
 CREATE TABLE Quarto (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     numero VARCHAR(10) UNIQUE NOT NULL,
-    tipo VARCHAR(20) CHECK (tipo IN ('simples', 'duplo', 'suíte')),
-    capacidade INTEGER NOT NULL,
+    tipo ENUM('simples', 'duplo', 'suíte'),
+    capacidade INT NOT NULL,
     valor_diaria DECIMAL(10,2) NOT NULL,
-    status VARCHAR(20) CHECK (status IN ('livre', 'reservado', 'ocupado')) NOT NULL
+    status ENUM('livre', 'reservado', 'ocupado') NOT NULL
 );
 
+-- Tabela Reserva
 CREATE TABLE Reserva (
-    id SERIAL PRIMARY KEY,
-    id_hospede INTEGER REFERENCES Hospede(id_pessoa),
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_hospede INT,
     data_entrada DATE NOT NULL,
     data_saida DATE NOT NULL,
-    qtd_hospedes INTEGER NOT NULL
+    qtd_hospedes INT NOT NULL,
+    FOREIGN KEY (id_hospede) REFERENCES Hospede(id_pessoa)
 );
 
+-- Tabela Reserva_Quarto
 CREATE TABLE Reserva_Quarto (
-    id_reserva INTEGER REFERENCES Reserva(id),
-    id_quarto INTEGER REFERENCES Quarto(id),
-    PRIMARY KEY (id_reserva, id_quarto)
+    id_reserva INT,
+    id_quarto INT,
+    PRIMARY KEY (id_reserva, id_quarto),
+    FOREIGN KEY (id_reserva) REFERENCES Reserva(id),
+    FOREIGN KEY (id_quarto) REFERENCES Quarto(id)
 );
 
+-- Tabela Servico
 CREATE TABLE Servico (
-    id SERIAL PRIMARY KEY,
+    id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(50) NOT NULL,
     descricao TEXT,
     preco DECIMAL(10,2) NOT NULL
 );
 
+-- Tabela Reserva_Servico
 CREATE TABLE Reserva_Servico (
-    id_reserva INTEGER REFERENCES Reserva(id),
-    id_servico INTEGER REFERENCES Servico(id),
-    PRIMARY KEY (id_reserva, id_servico)
+    id_reserva INT,
+    id_servico INT,
+    PRIMARY KEY (id_reserva, id_servico),
+    FOREIGN KEY (id_reserva) REFERENCES Reserva(id),
+    FOREIGN KEY (id_servico) REFERENCES Servico(id)
 );
 
+-- Tabela Pagamento
 CREATE TABLE Pagamento (
-    id SERIAL PRIMARY KEY,
-    id_reserva INTEGER REFERENCES Reserva(id),
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_reserva INT,
     valor_total DECIMAL(10,2) NOT NULL,
     data_pagamento DATE,
-    forma_pagamento VARCHAR(20) CHECK (forma_pagamento IN ('dinheiro', 'cartao', 'pix')),
-    status_pagamento VARCHAR(20) CHECK (status_pagamento IN ('pago', 'pendente'))
+    forma_pagamento ENUM('dinheiro', 'cartao', 'pix'),
+    status_pagamento ENUM('pago', 'pendente'),
+    FOREIGN KEY (id_reserva) REFERENCES Reserva(id)
 );
 
+-- Tabela Avaliacao
 CREATE TABLE Avaliacao (
-    id SERIAL PRIMARY KEY,
-    id_reserva INTEGER REFERENCES Reserva(id),
-    nota INTEGER CHECK (nota BETWEEN 1 AND 5),
-    comentario TEXT
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_reserva INT,
+    nota INT CHECK (nota BETWEEN 1 AND 5),
+    comentario TEXT,
+    FOREIGN KEY (id_reserva) REFERENCES Reserva(id)
 );
 
+-- Tabela Manutencao
 CREATE TABLE Manutencao (
-    id SERIAL PRIMARY KEY,
-    id_quarto INTEGER REFERENCES Quarto(id),
-    id_funcionario INTEGER REFERENCES Funcionario(id_pessoa),
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_quarto INT,
+    id_funcionario INT,
     descricao TEXT NOT NULL,
     data DATE NOT NULL,
     custo DECIMAL(10,2),
-    status VARCHAR(20) CHECK (status IN ('pendente', 'concluída'))
+    status ENUM('pendente', 'concluída'),
+    FOREIGN KEY (id_quarto) REFERENCES Quarto(id),
+    FOREIGN KEY (id_funcionario) REFERENCES Funcionario(id_pessoa)
 );
