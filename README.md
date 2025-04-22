@@ -55,7 +55,7 @@ Incluindo modelagem conceitual, lógica, scripts SQL e uma interface funcional e
 
 - [x] Mini mundo
 - [x] Modelo conceitual (feito no BRModelo)
-- [ ] Modelo lógico relacional (em produção)
+- [x] Modelo lógico relacional (feito no BRModelo)
 - [x] Script de criação do banco (MySQL)
 - [x] Script de inserção de dados fictícios
 - [ ] CRUD funcional em Java (sem uso de frameworks/ORM)
