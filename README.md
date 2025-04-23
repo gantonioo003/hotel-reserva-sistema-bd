@@ -152,7 +152,7 @@ Exemplo de caminho no Windows:C:\Users\seu_usuario\Downloads\mysql-connector-j-9
 
 Dentro do projeto, localize a classe `Conexao.java` (ou semelhante). Ela deve conter algo como:
 
-```java
+   java
 String url = "jdbc:mysql://localhost:3306/nome_do_banco";
 String user = "root";
 String password = "sua_senha";
