@@ -1,0 +1,135 @@
+Claro! Vamos explicar **passo a passo, de forma simples**, como se fosse um guia para quem nunca trabalhou com esse tipo de projeto. Mesmo que você já tenha feito análise no Colab, este projeto vai além: ele simula uma **estrutura usada por empresas de verdade** para tratar e visualizar dados.
+
+---
+
+## 🌐 Visão geral: O que é esse projeto?
+
+Você vai **pegar dados públicos (por exemplo, do site Kaggle)**, **transformar esses dados**, **armazenar num banco de dados profissional (PostgreSQL)**, e depois **criar gráficos com uma ferramenta chamada Metabase**, que mostra as informações de forma bonita e fácil de entender.
+
+Essa é uma **mini simulação de como grandes empresas trabalham com dados no dia a dia**.
+
+---
+
+## 🧩 Etapas explicadas para leigos:
+
+---
+
+### 🟩 1. Escolher a fonte de dados (Kaggle, por exemplo)
+
+**O que é isso?**
+É o lugar de onde os dados vão sair. O site Kaggle é como uma biblioteca cheia de arquivos com dados sobre vários assuntos (filmes da Netflix, COVID, vendas, Airbnb etc.).
+
+**O que fazer?**
+Baixe um desses arquivos (geralmente em CSV), que será o ponto de partida.
+
+---
+
+### 🟨 2. Criar um "job" ETL que salva os dados num lugar temporário (staging)
+
+**O que é isso?**
+ETL significa **Extrair**, **Transformar** e **Carregar**.
+
+* Você **extrai** o arquivo (lê o CSV).
+* Salva ele numa pasta local do seu computador ou no Google Drive.
+* Esse é um **estágio intermediário** antes de mandar pro banco de dados.
+
+**Ferramenta usada:** Python + Pandas.
+**Exemplo:** Lê um CSV e salva ele limpo na pasta `./staging/`.
+
+---
+
+### 🟧 3. Instalar o PostgreSQL (sugestão: com Docker)
+
+**O que é isso?**
+É um programa de banco de dados — ou seja, onde vamos guardar os dados de forma organizada.
+
+**E Docker?**
+É como se fosse uma "caixinha mágica" que roda o PostgreSQL sem precisar instalar tudo no seu PC. A gente diz pra ele: "Roda o PostgreSQL nessa caixinha!", e pronto.
+
+---
+
+### 🟥 4. Criar outro ETL para mandar os dados pro banco de dados (PostgreSQL)
+
+**O que é isso?**
+Agora que temos o banco rodando, precisamos **mandar os dados da pasta temporária para o banco**.
+
+**Como?**
+Você cria um script Python que:
+
+* Conecta no PostgreSQL.
+* Cria uma tabela com os dados.
+* Insere linha por linha no banco.
+
+---
+
+### 🔷 5. Analisar os dados e definir 4 dimensões
+
+**O que é isso?**
+Agora vamos entender o que os dados têm e dividir em **categorias importantes (chamadas dimensões)**.
+Por exemplo, no caso da Netflix:
+
+* **Tipo** (Filme ou Série)
+* **País**
+* **Ano de lançamento**
+* **Categoria** (Drama, Comédia, etc.)
+
+Essas dimensões vão ser transformadas em tabelas separadas no banco (mais organizado e fácil de consultar).
+
+---
+
+### 🔶 6. Criar outro ETL para "normalizar" os dados (organizar por dimensões)
+
+**O que é isso?**
+"Normalizar" significa **separar os dados em partes mais limpas e organizadas**.
+
+Exemplo:
+
+* Em vez de repetir "Estados Unidos" mil vezes, você cria uma **tabela chamada `dim_pais`** com:
+
+  * `id_pais = 1`, `nome = Estados Unidos`
+  * `id_pais = 2`, `nome = Brasil`
+* Depois, a tabela principal só guarda o número (1, 2...), economizando espaço e facilitando consultas.
+
+Você cria várias dessas **tabelas de dimensão**, cada uma com seus dados únicos.
+
+---
+
+### 🟦 7. Instalar o Metabase (também pode ser com Docker)
+
+**O que é isso?**
+É uma **ferramenta de visualização de dados**. Você conecta o Metabase ao PostgreSQL, e ele transforma suas tabelas em **gráficos, dashboards e relatórios lindos**.
+
+Você vê, por exemplo:
+
+* Quantos filmes a Netflix lançou por ano.
+* Quais países têm mais títulos.
+
+---
+
+### 🟫 8. Criar visualizações com 2 fatos importantes
+
+**O que é isso?**
+"Fatos" são **coisas que você quer medir**.
+
+Exemplo (Netflix):
+
+* Fato 1: Quantidade de filmes por ano.
+* Fato 2: Quantidade de títulos por país.
+
+Com o Metabase, você cria **gráficos simples** para mostrar essas informações de forma visual.
+
+---
+
+## 🛠 Ferramentas que você vai usar:
+
+| Etapa                         | Ferramenta              |
+| ----------------------------- | ----------------------- |
+| Script e manipulação de dados | Python + Pandas         |
+| Armazenamento temporário      | Pasta local ou GDrive   |
+| Banco de dados                | PostgreSQL (via Docker) |
+| Visualização                  | Metabase (via Docker)   |
+
+---
+
+Se quiser, posso montar os **scripts prontos**, passo a passo, com base em um dataset que você escolher.
+Quer que a gente use, por exemplo, o da **Netflix**?
