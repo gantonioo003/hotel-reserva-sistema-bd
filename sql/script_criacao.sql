@@ -2,89 +2,105 @@ CREATE DATABASE IF NOT EXISTS Hotel;
 USE Hotel;
 
 CREATE TABLE Pessoa (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    cpf CHAR(11) UNIQUE NOT NULL,
-    data_nascimento DATE NOT NULL,
-    rua VARCHAR(100),
-    numero VARCHAR(10),
-    cidade VARCHAR(50),
-    estado CHAR(2),
-    cep CHAR(8),
-    telefone1 VARCHAR(255) NULL, 
-    telefone2 VARCHAR(15)           
+    idPessoa INT PRIMARY KEY,
+    nome VARCHAR(100),
+    cpf VARCHAR(14) UNIQUE,
+    dataNascimento DATE,
+    endereco VARCHAR(200)
+);
+
+CREATE TABLE Telefone (
+    telefone_PK INT PRIMARY KEY,
+    telefone VARCHAR(15),
+    idPessoa INT,
+    FOREIGN KEY (idPessoa) REFERENCES Pessoa(idPessoa)
 );
 
 CREATE TABLE Hospede (
-    id_pessoa INT PRIMARY KEY,
-    FOREIGN KEY (id_pessoa) REFERENCES Pessoa(id)
+    idPessoa INT PRIMARY KEY,
+    FOREIGN KEY (idPessoa) REFERENCES Pessoa(idPessoa)
 );
-
 
 CREATE TABLE Funcionario (
-    id_pessoa INT PRIMARY KEY,
-    supervisor_id INT,
-    FOREIGN KEY (id_pessoa) REFERENCES Pessoa(id),
-    FOREIGN KEY (supervisor_id) REFERENCES Funcionario(id_pessoa)
+    idPessoa INT PRIMARY KEY,
+    FOREIGN KEY (idPessoa) REFERENCES Pessoa(idPessoa)
 );
 
+CREATE TABLE Supervisiona (
+    idFuncionario_supervisor INT,
+    idFuncionario_supervisionado INT,
+    PRIMARY KEY (idFuncionario_supervisor, idFuncionario_supervisionado),
+    FOREIGN KEY (idFuncionario_supervisor) REFERENCES Funcionario(idPessoa),
+    FOREIGN KEY (idFuncionario_supervisionado) REFERENCES Funcionario(idPessoa)
+);
 
 CREATE TABLE Quarto (
-    numero VARCHAR(5) PRIMARY KEY,      
-    tipo ENUM('simples', 'duplo', 'suíte'),  
-    capacidade INT NOT NULL,             
-    valor_diaria DECIMAL(10,2) NOT NULL, 
-    status ENUM('livre', 'reservado', 'ocupado') NOT NULL 
+    idQuarto INT PRIMARY KEY,
+    numero VARCHAR(10),
+    tipo VARCHAR(20),
+    capacidade INT,
+    valorDiaria DECIMAL(10,2),
+    status VARCHAR(20)
 );
 
+CREATE TABLE Manutencao (
+    id_manutencao INT PRIMARY KEY,
+    data DATE,
+    tipo_servico VARCHAR(100),
+    descricao TEXT,
+    custo DECIMAL(10,2)
+);
+
+CREATE TABLE Executa (
+    idFuncionario INT,
+    idManutencao INT,
+    idQuarto INT,
+    PRIMARY KEY (idFuncionario, idManutencao, idQuarto),
+    FOREIGN KEY (idFuncionario) REFERENCES Funcionario(idPessoa),
+    FOREIGN KEY (idManutencao) REFERENCES Manutencao(id_manutencao),
+    FOREIGN KEY (idQuarto) REFERENCES Quarto(idQuarto)
+);
+
+CREATE TABLE Pagamento (
+    idPagamento INT PRIMARY KEY,
+    forma VARCHAR(20),
+    valor DECIMAL(10,2),
+    data DATE,
+    status VARCHAR(20)
+);
 
 CREATE TABLE Reserva (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    id_hospede INT,
-    data_entrada DATE NOT NULL,
-    data_saida DATE NOT NULL,
-    qtd_hospedes INT NOT NULL,
-    quartos TEXT,         
-    servicos TEXT,        
-    FOREIGN KEY (id_hospede) REFERENCES Hospede(id_pessoa)
+    idReserva INT PRIMARY KEY,
+    dataEntrada DATE,
+    dataSaida DATE,
+    qtdPessoas INT,
+    idHospede INT,
+    idPagamento INT,
+    idQuarto INT,
+    FOREIGN KEY (idHospede) REFERENCES Hospede(idPessoa),
+    FOREIGN KEY (idPagamento) REFERENCES Pagamento(idPagamento),
+    FOREIGN KEY (idQuarto) REFERENCES Quarto(idQuarto)
+);
+
+CREATE TABLE Avaliacao (
+    idAvaliacao INT PRIMARY KEY,
+    comentario TEXT,
+    nota INT,
+    idReserva INT,
+    FOREIGN KEY (idReserva) REFERENCES Reserva(idReserva)
 );
 
 CREATE TABLE Servico (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(50) NOT NULL,
+    idServico INT PRIMARY KEY,
+    nome VARCHAR(100),
     descricao TEXT,
-    preco DECIMAL(10,2) NOT NULL
+    valor DECIMAL(10,2)
 );
 
-
-CREATE TABLE Pagamento (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    id_reserva INT,
-    valor_total DECIMAL(10,2) NOT NULL,
-    data_pagamento DATE,
-    forma_pagamento ENUM('dinheiro', 'cartao', 'pix'),
-    status_pagamento ENUM('pago', 'pendente'),
-    FOREIGN KEY (id_reserva) REFERENCES Reserva(id)
-);
-
-
-CREATE TABLE Avaliacao (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    id_reserva INT,
-    nota INT CHECK (nota BETWEEN 1 AND 5),
-    comentario TEXT,
-    FOREIGN KEY (id_reserva) REFERENCES Reserva(id)
-);
-
-
-CREATE TABLE Manutencao (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    id_quarto VARCHAR(5),
-    id_funcionario INT,
-    descricao TEXT NOT NULL,
-    data DATE NOT NULL,
-    custo DECIMAL(10,2),
-    status ENUM('pendente', 'concluída'),
-    FOREIGN KEY (id_quarto) REFERENCES Quarto(numero),
-    FOREIGN KEY (id_funcionario) REFERENCES Funcionario(id_pessoa)
+CREATE TABLE Possui (
+    idServico INT,
+    idReserva INT,
+    PRIMARY KEY (idServico, idReserva),
+    FOREIGN KEY (idServico) REFERENCES Servico(idServico),
+    FOREIGN KEY (idReserva) REFERENCES Reserva(idReserva)
 );
