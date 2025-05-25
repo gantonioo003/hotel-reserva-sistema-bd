@@ -1,34 +1,36 @@
 # Sistema de Reserva de Hotéis – Projeto de Banco de Dados
 
-Este repositório apresenta o desenvolvimento completo de um sistema de **Reserva de Hotéis**, realizado como projeto final da disciplina de **Projeto e Modelagem de Banco de Dados** ministrada pela professora **Gabrielle K. Canalle**.
+Este repositório apresenta o desenvolvimento completo de um sistema de **Reserva de Hotéis**, desenvolvido como projeto final da disciplina de **Projeto e Modelagem de Banco de Dados**, ministrada pela professora **Gabrielle K. Canalle**.
 
 ---
 
-## 🌍 Visão Geral do Projeto
+## 🌍 Visão Geral
 
-O objetivo do sistema é fornecer uma aplicação robusta de gerenciamento hoteleiro, permitindo o controle de reservas, pagamentos, manutenções, serviços, avaliações, relações funcionais e todos os processos que envolvem a hospedagem de clientes.
+O objetivo do sistema é permitir o gerenciamento completo de um hotel, incluindo o controle de hóspedes, funcionários, reservas, quartos, manutenções, pagamentos, avaliações e serviços adicionais.
 
 ### 💡 Destaques:
 
-* Modelagem conceitual (MER) e lógica relacional completa
-* Scripts SQL de criação e população de dados
-* CRUDs completos (inserção, leitura, atualização, exclusão) para **todas as tabelas**
-* API backend em **Node.js + Express** com conexão a banco **MySQL** via **mysql2/promise**
-* Testes automatizados com **Axios** em `test.js`
+* Modelagem conceitual (MER), lógica relacional e scripts SQL completos
+* Backend moderno utilizando **Java + Spring Boot**
+* Frontend com **React** em JavaScript
+* Integração total com banco de dados **MySQL**
+* CRUD completo para todas as tabelas do modelo
+* Projeto dividido em camadas (model, controller, repository, etc.)
+* Estrutura pronta para testes e expansão futura
 
 ---
 
 ## 🚀 Tecnologias Utilizadas
 
-* **Backend**: Node.js + Express
+* **Backend**: Java 17 + Spring Boot 3
+* **Frontend**: React + Vite (JavaScript)
 * **Banco de Dados**: MySQL
-* **Conexão**: mysql2 (versão Promise)
-* **Testes de API**: Axios via `test.js`
-* **IDE**: VS Code
+* **ORM**: Spring Data JPA (Hibernate)
+* **IDE recomendadas**: IntelliJ IDEA, VS Code
 
 ---
 
-## 🔧 Como Rodar o Projeto Localmente
+## 🔧 Como Rodar o Projeto
 
 ### 1. Clone o repositório
 
@@ -37,111 +39,110 @@ git clone https://github.com/SEU_USUARIO/hotel-reserva-sistema-bd.git
 cd hotel-reserva-sistema-bd/backend
 ```
 
-### 2. Instale as dependências
+### 2. Configure o banco de dados MySQL
 
-```bash
-npm install
-```
-
-### 3. Configure o banco de dados
-
-* Certifique-se de que o MySQL está rodando
-* Crie um banco chamado `hotel`
-* Execute o script SQL de criação:
+* Crie um banco chamado hotel
+* Execute os scripts:
 
 ```sql
 source ./sql/script_criacao.sql;
 source ./sql/script_insercao.sql;
 ```
 
-### 4. Inicie o servidor
+### 3. Configure o `application.properties`
 
-```bash
-node server.js
+Exemplo:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/hotel
+spring.datasource.username=root
+spring.datasource.password=root
+spring.jpa.hibernate.ddl-auto=none
+spring.jpa.show-sql=true
 ```
 
-### 5. Teste a API
-
-Execute:
+### 4. Inicie o backend (Spring Boot)
 
 ```bash
-node test.js
+./mvnw spring-boot:run
 ```
+
+O backend estará disponível em: [http://localhost:8080](http://localhost:8080)
 
 ---
 
-## 🏛️ Estrutura do Projeto
+## 📦 Estrutura do Projeto
 
 ```
 hotel-reserva-sistema-bd/
 ├── backend/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── test.js
-│   ├── db.js
-│   └── server.js
+│   ├── src/
+│   │   └── main/
+│   │       ├── java/com/hotel/reserva/
+│   │       │   ├── controller/
+│   │       │   ├── model/
+│   │       │   ├── repository/
+│   │       │   └── ReservaApplication.java
+│   │       └── resources/
+│   │           └── application.properties
 ├── sql/
 │   ├── script_criacao.sql
 │   └── script_insercao.sql
-├── docs/
-│   ├── mini_mundo.md
-│   ├── modelo_conceitual.png
-│   └── modelo_logico.md
-└── README.md
+└── frontend/ (em breve)
 ```
 
 ---
 
-## 📄 Funcionalidades Implementadas (CRUD)
+## 📄 Funcionalidades (CRUDs)
 
-* [x] **Pessoa**
-* [x] **Telefone** (relacionado a Pessoa)
-* [x] **Hospede** (subtipo de Pessoa)
-* [x] **Funcionario** (subtipo de Pessoa)
-* [x] **Quarto**
-* [x] **Manutencao**
-* [x] **Executa** (ligando Funcionario + Manutencao + Quarto)
-* [x] **Pagamento**
-* [x] **Reserva** (ligando Quarto, Hospede, Pagamento)
-* [x] **Avaliacao** (ligada a Reserva)
-* [x] **Servico**
-* [x] **Possui** (reserva possui serviços)
-* [x] **Supervisiona** (funcionário supervisiona outro)
+✔️ Implementadas com Spring Boot:
+
+* Pessoa
+* Telefone (relacionada a Pessoa)
+* Hospede (herda Pessoa)
+* Funcionario (herda Pessoa)
+* Quarto
+* Manutencao
+* Executa (relaciona Funcionario, Manutencao, Quarto)
+* Pagamento
+* Reserva (relaciona Hospede, Quarto, Pagamento)
+* Avaliacao (ligada à Reserva)
+* Servico
+* Possui (Reserva possui Serviços)
+* Supervisiona (auto-relacionamento de Funcionario)
 
 ---
 
 ## 📅 Etapas do Projeto
 
-| Etapa                     | Descrição                         | Status               |
-| ------------------------- | --------------------------------- | -------------------- |
-| Mini mundo                | Definição textual do sistema      | ✅ Concluído          |
-| Modelo Conceitual         | MER via BRModelo                  | ✅ Concluído          |
-| Modelo Lógico             | Conversão p/ tabelas relacionais  | ✅ Concluído          |
-| Script SQL                | Criação e inserção de dados       | ✅ Concluído          |
-| CRUD via Node.js          | API funcional com Express + MySQL | ✅ Concluído          |
-| Testes via Axios          | Arquivo `test.js` com chamadas    | ✅ Concluído          |
-| Interface Java (opcional) | CRUD com JDBC puro                | ⏳ Em desenvolvimento |
+| Etapa                     | Descrição                    | Status     |
+| ------------------------- | ---------------------------- | ---------- |
+| Mini mundo                | Definição textual do sistema | ✅ Feito    |
+| Modelo Conceitual         | MER via BRModelo             | ✅ Feito    |
+| Modelo Lógico             | Tabelas relacionais          | ✅ Feito    |
+| Scripts SQL               | Criação e inserção de dados  | ✅ Feito    |
+| CRUDs Backend Spring Boot | APIs REST com Java           | ✅ Feito    |
+| Frontend React            | Interface para interação     | ⏳ Em breve |
 
 ---
 
-## 📈 Exemplo de Rota (Pessoa)
+## 📱 Exemplos de Endpoints
 
 ```http
-GET /api/pessoas
-POST /api/pessoas
-PUT /api/pessoas/:id
-DELETE /api/pessoas/:id
+GET    /api/pessoas
+POST   /api/pessoas
+PUT    /api/pessoas/{id}
+DELETE /api/pessoas/{id}
 ```
 
-Exemplo de corpo (POST):
+Exemplo de JSON:
 
 ```json
 {
   "idPessoa": 1,
-  "nome": "João Silva",
-  "cpf": "12345678901",
-  "dataNascimento": "1990-01-01",
+  "nome": "Maria Oliveira",
+  "cpf": "12345678900",
+  "dataNascimento": "1995-08-15",
   "endereco": "Rua das Flores, 123"
 }
 ```
@@ -150,9 +151,11 @@ Exemplo de corpo (POST):
 
 ## 👥 Autores
 
-* **Gabriel Antonio**
-* **Gustavo Laporte**
-* **Matheos Guerra**
-* **Pedro Dhalia**
+* Gabriel Antonio
+* Gustavo Laporte
+* Matheos Guerra
+* Pedro Dhalia
 
-Projeto acadêmico desenvolvido em 2025 ✨
+🧠 Projeto acadêmico – 2025
+
+
