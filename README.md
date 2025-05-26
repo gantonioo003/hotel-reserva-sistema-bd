@@ -104,6 +104,7 @@ npm run dev
     - mini_mundo.md
     - modelo_conceitual.png
     - modelo_logico.md
+    - relatorio_final.pdf
   - README.md
 
 
