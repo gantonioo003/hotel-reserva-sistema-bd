@@ -74,13 +74,14 @@ npm run dev
 hotel-reserva-sistema-bd/
 ├── backend/
 │   ├── src/
-│   │   └── main/java/com/hotel/reserva/
-│   │       ├── controller/
-│   │       ├── model/
-│   │       ├── repository/
-│   │       └── ReservaApplication.java
-│   │   └── resources/
-│   │       └── application.properties
+│   │   ├── main/
+│   │   │   ├── java/com/hotel/reserva/
+│   │   │   │   ├── controller/
+│   │   │   │   ├── model/
+│   │   │   │   ├── repository/
+│   │   │   │   └── ReservaApplication.java
+│   │   │   └── resources/
+│   │   │       └── application.properties
 │   └── pom.xml
 ├── frontend/
 │   ├── src/
@@ -93,12 +94,14 @@ hotel-reserva-sistema-bd/
 │   ├── package.json
 │   └── vite.config.js
 ├── sql/
-│   ├── script\_criacao.sql
-│   └── script\_insercao.sql
-└── docs/
-├── mini\_mundo.md
-├── modelo\_conceitual.png
-└── modelo\_logico.md
+│   ├── script_criacao.sql
+│   └── script_insercao.sql
+├── docs/
+│   ├── mini_mundo.md
+│   ├── modelo_conceitual.png
+│   └── modelo_logico.md
+└── README.md
+
 
 ---
 
