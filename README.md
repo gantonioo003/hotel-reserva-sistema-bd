@@ -70,37 +70,65 @@ npm run dev
 ---
 
 ## 🧱 Estrutura do Projeto
+📁 hotel-reserva-sistema-bd/
 
-hotel-reserva-sistema-bd/
-├── backend/
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/com/hotel/reserva/
-│   │   │   │   ├── controller/
-│   │   │   │   ├── model/
-│   │   │   │   ├── repository/
-│   │   │   │   └── ReservaApplication.java
-│   │   │   └── resources/
-│   │   │       └── application.properties
-│   └── pom.xml
-├── frontend/
-│   ├── src/
-│   │   ├── api/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── App.jsx
-│   │   └── index.jsx
-│   ├── public/
-│   ├── package.json
-│   └── vite.config.js
-├── sql/
-│   ├── script_criacao.sql
-│   └── script_insercao.sql
-├── docs/
-│   ├── mini_mundo.md
-│   ├── modelo_conceitual.png
-│   └── modelo_logico.md
-└── README.md
+📁 backend/
+
+📁 src/
+
+📁 main/
+
+📁 java/com/hotel/reserva/
+
+📁 controller/
+
+📁 model/
+
+📁 repository/
+
+📄 ReservaApplication.java
+
+📁 resources/
+
+📄 application.properties
+
+📄 pom.xml
+
+📁 frontend/
+
+📁 src/
+
+📁 api/
+
+📁 components/
+
+📁 pages/
+
+📄 App.jsx
+
+📄 index.jsx
+
+📁 public/
+
+📄 package.json
+
+📄 vite.config.js
+
+📁 sql/
+
+📄 script_criacao.sql
+
+📄 script_insercao.sql
+
+📁 docs/
+
+📄 mini_mundo.md
+
+📄 modelo_conceitual.png
+
+📄 modelo_logico.md
+
+📄 README.md
 
 
 ---
