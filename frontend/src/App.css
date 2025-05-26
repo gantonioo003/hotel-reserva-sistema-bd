@@ -1,0 +1,75 @@
+/* src/App.css */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f5f7fa;
+  color: #333;
+}
+
+.container {
+  max-width: 1000px;
+  margin-left: 240px; /* dá espaço pro sidebar */
+  padding: 2rem;
+}
+
+
+form input, form select, form button {
+  margin: 0.5rem 0.5rem 1rem 0;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+form button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #0056b3;
+}
+
+nav {
+  background-color: #2c3e50;
+  padding: 1rem;
+}
+
+nav a {
+  color: #ecf0f1;
+  margin-right: 1rem;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+nav button {
+  background: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.7rem;
+  margin-left: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+h1, h3 {
+  color: #2c3e50;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+ul li {
+  background: white;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
