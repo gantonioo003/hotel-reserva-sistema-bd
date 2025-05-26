@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS Hotel;
 USE Hotel;
 
 CREATE TABLE Pessoa (
-    idPessoa INT PRIMARY KEY,
+    idPessoa INT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(100),
     cpf VARCHAR(14) UNIQUE,
     dataNascimento DATE,
