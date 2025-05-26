@@ -1,161 +1,152 @@
 # Sistema de Reserva de Hotéis – Projeto de Banco de Dados
 
-Este repositório apresenta o desenvolvimento completo de um sistema de **Reserva de Hotéis**, desenvolvido como projeto final da disciplina de **Projeto e Modelagem de Banco de Dados**, ministrada pela professora **Gabrielle K. Canalle**.
+Este repositório apresenta o desenvolvimento completo de um sistema de Reserva de Hotéis, elaborado como projeto final da disciplina de Projeto e Modelagem de Banco de Dados da professora Gabrielle K. Canalle.
 
 ---
 
-## 🌍 Visão Geral
+## 🌐 Visão Geral
 
-O objetivo do sistema é permitir o gerenciamento completo de um hotel, incluindo o controle de hóspedes, funcionários, reservas, quartos, manutenções, pagamentos, avaliações e serviços adicionais.
+O sistema simula as operações de um hotel, permitindo o gerenciamento completo de:
 
-### 💡 Destaques:
-
-* Modelagem conceitual (MER), lógica relacional e scripts SQL completos
-* Backend moderno utilizando **Java + Spring Boot**
-* Frontend com **React** em JavaScript
-* Integração total com banco de dados **MySQL**
-* CRUD completo para todas as tabelas do modelo
-* Projeto dividido em camadas (model, controller, repository, etc.)
-* Estrutura pronta para testes e expansão futura
+* Hóspedes, Funcionários e seus relacionamentos
+* Quartos, Reservas, Pagamentos
+* Manutenções e Execuções de serviços
+* Avaliações dos hóspedes
+* Serviços adicionais
 
 ---
 
-## 🚀 Tecnologias Utilizadas
+## 🛠️ Tecnologias Utilizadas
 
-* **Backend**: Java 17 + Spring Boot 3
-* **Frontend**: React + Vite (JavaScript)
-* **Banco de Dados**: MySQL
-* **ORM**: Spring Data JPA (Hibernate)
-* **IDE recomendadas**: IntelliJ IDEA, VS Code
+* Backend: Java 17 + Spring Boot 3
+* Frontend: React + Vite (JavaScript)
+* Banco de Dados: MySQL
+* ORM: Spring Data JPA (Hibernate)
+* Gerenciador de dependências: Maven
+* IDEs: IntelliJ (backend) e VS Code (frontend)
 
 ---
 
-## 🔧 Como Rodar o Projeto
+## 🚀 Como Rodar o Projeto
 
-### 1. Clone o repositório
+1. Inicie o banco de dados MySQL
 
-```bash
-git clone https://github.com/SEU_USUARIO/hotel-reserva-sistema-bd.git
-cd hotel-reserva-sistema-bd/backend
-```
-
-### 2. Configure o banco de dados MySQL
-
-* Crie um banco chamado hotel
-* Execute os scripts:
+Abra o MySQL Workbench ou terminal:
 
 ```sql
+mysql -u root -p
+-- digite sua senha
+
+CREATE DATABASE hotel;
+USE hotel;
+
 source ./sql/script_criacao.sql;
 source ./sql/script_insercao.sql;
 ```
 
-### 3. Configure o `application.properties`
+2. Inicie o backend (Spring Boot)
 
-Exemplo:
-
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/hotel
-spring.datasource.username=root
-spring.datasource.password=root
-spring.jpa.hibernate.ddl-auto=none
-spring.jpa.show-sql=true
-```
-
-### 4. Inicie o backend (Spring Boot)
+Abra um terminal e navegue até a pasta backend:
 
 ```bash
+cd backend
 ./mvnw spring-boot:run
 ```
 
-O backend estará disponível em: [http://localhost:8080](http://localhost:8080)
+3. Inicie o frontend (React + Vite)
+
+Abra outro terminal:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+4. Acesse no navegador:
+
+[http://localhost:5173](http://localhost:5173)
 
 ---
 
-## 📦 Estrutura do Projeto
+## 🧱 Estrutura do Projeto
 
-```
 hotel-reserva-sistema-bd/
 ├── backend/
 │   ├── src/
-│   │   └── main/
-│   │       ├── java/com/hotel/reserva/
-│   │       │   ├── controller/
-│   │       │   ├── model/
-│   │       │   ├── repository/
-│   │       │   └── ReservaApplication.java
-│   │       └── resources/
-│   │           └── application.properties
+│   │   └── main/java/com/hotel/reserva/
+│   │       ├── controller/
+│   │       ├── model/
+│   │       ├── repository/
+│   │       └── ReservaApplication.java
+│   │   └── resources/
+│   │       └── application.properties
+│   └── pom.xml
+├── frontend/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── App.jsx
+│   │   └── index.jsx
+│   ├── public/
+│   ├── package.json
+│   └── vite.config.js
 ├── sql/
-│   ├── script_criacao.sql
-│   └── script_insercao.sql
-└── frontend/ (em breve)
-```
+│   ├── script\_criacao.sql
+│   └── script\_insercao.sql
+└── docs/
+├── mini\_mundo.md
+├── modelo\_conceitual.png
+└── modelo\_logico.md
 
 ---
 
-## 📄 Funcionalidades (CRUDs)
-
-✔️ Implementadas com Spring Boot:
+## ✅ Funcionalidades Implementadas (CRUDs)
 
 * Pessoa
 * Telefone (relacionada a Pessoa)
-* Hospede (herda Pessoa)
-* Funcionario (herda Pessoa)
+* Hospede (herança de Pessoa)
+* Funcionario (herança de Pessoa)
 * Quarto
 * Manutencao
-* Executa (relaciona Funcionario, Manutencao, Quarto)
+* Executa (ligação entre Funcionario, Quarto e Manutencao)
 * Pagamento
-* Reserva (relaciona Hospede, Quarto, Pagamento)
+* Reserva (relacionada a Quarto, Hospede e Pagamento)
 * Avaliacao (ligada à Reserva)
 * Servico
-* Possui (Reserva possui Serviços)
-* Supervisiona (auto-relacionamento de Funcionario)
+* Possui (reserva possui serviços)
+* Supervisiona (auto-relacionamento entre Funcionários)
 
 ---
 
-## 📅 Etapas do Projeto
+## 🔁 Exemplos de Endpoints (Pessoa)
 
-| Etapa                     | Descrição                    | Status     |
-| ------------------------- | ---------------------------- | ---------- |
-| Mini mundo                | Definição textual do sistema | ✅ Feito    |
-| Modelo Conceitual         | MER via BRModelo             | ✅ Feito    |
-| Modelo Lógico             | Tabelas relacionais          | ✅ Feito    |
-| Scripts SQL               | Criação e inserção de dados  | ✅ Feito    |
-| CRUDs Backend Spring Boot | APIs REST com Java           | ✅ Feito    |
-| Frontend React            | Interface para interação     | ⏳ Em breve |
-
----
-
-## 📱 Exemplos de Endpoints
-
-```http
-GET    /api/pessoas
-POST   /api/pessoas
-PUT    /api/pessoas/{id}
-DELETE /api/pessoas/{id}
-```
+GET     /api/pessoas
+POST    /api/pessoas
+PUT     /api/pessoas/{id}
+DELETE  /api/pessoas/{id}
 
 Exemplo de JSON:
 
 ```json
 {
   "idPessoa": 1,
-  "nome": "Maria Oliveira",
+  "nome": "João da Silva",
   "cpf": "12345678900",
-  "dataNascimento": "1995-08-15",
-  "endereco": "Rua das Flores, 123"
+  "dataNascimento": "1990-05-15",
+  "endereco": "Av. Principal, 123"
 }
 ```
 
 ---
 
-## 👥 Autores
+## 👨‍💻 Autores
 
 * Gabriel Antonio
 * Gustavo Laporte
 * Matheos Guerra
 * Pedro Dhalia
 
-🧠 Projeto acadêmico – 2025
-
+Projeto acadêmico – 2025
 
