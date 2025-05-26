@@ -99,6 +99,7 @@ npm run dev
   - sql/
     - script_criacao.sql
     - script_insercao.sql
+    - consultas_avancadas.sql
   - docs/
     - mini_mundo.md
     - modelo_conceitual.png
