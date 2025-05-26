@@ -148,7 +148,7 @@ npm run dev
   "endereco": "Av. Principal, 123"
 }
 
-
+'''
 ## 👨‍💻 Autores
 
 * Gabriel Antonio
