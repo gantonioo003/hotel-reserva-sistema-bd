@@ -147,8 +147,8 @@ npm run dev
   "dataNascimento": "1990-05-15",
   "endereco": "Av. Principal, 123"
 }
+```
 
-'''
 ## 👨‍💻 Autores
 
 * Gabriel Antonio
