@@ -3,17 +3,17 @@ import QuartoForm from "../components/QuartoForm";
 import QuartoList from "../components/QuartoList";
 
 function QuartosPage() {
-  const [refresh, setRefresh] = useState(false);
+  const [atualizar, setAtualizar] = useState(0);
 
-  function atualizar() {
-    setRefresh(!refresh);
+  function handleQuartoCriado() {
+    setAtualizar(prev => prev + 1);
   }
 
   return (
     <div className="container">
       <h1>Gestão de Quartos</h1>
-      <QuartoForm onQuartoCriado={atualizar} />
-      <QuartoList key={refresh} />
+      <QuartoForm onQuartoCriado={handleQuartoCriado} />
+      <QuartoList key={atualizar} />
     </div>
   );
 }

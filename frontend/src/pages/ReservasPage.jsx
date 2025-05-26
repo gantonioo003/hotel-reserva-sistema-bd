@@ -3,17 +3,13 @@ import ReservaForm from "../components/ReservaForm";
 import ReservaList from "../components/ReservaList";
 
 function ReservasPage() {
-  const [refresh, setRefresh] = useState(false);
-
-  function atualizar() {
-    setRefresh(!refresh);
-  }
+  const [atualizar, setAtualizar] = useState(0);
 
   return (
     <div className="container">
-      <h1>Reservas</h1>
-      <ReservaForm onReservaCriada={atualizar} />
-      <ReservaList key={refresh} />
+      <h1>Gestão de Reservas</h1>
+      <ReservaForm />
+      <ReservaList key={atualizar} />
     </div>
   );
 }

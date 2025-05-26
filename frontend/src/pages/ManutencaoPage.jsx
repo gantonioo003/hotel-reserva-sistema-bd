@@ -3,17 +3,17 @@ import ManutencaoForm from "../components/ManutencaoForm";
 import ManutencaoList from "../components/ManutencaoList";
 
 function ManutencaoPage() {
-  const [refresh, setRefresh] = useState(false);
+  const [atualizar, setAtualizar] = useState(0);
 
-  function atualizar() {
-    setRefresh(!refresh);
+  function handleManutencaoCriada() {
+    setAtualizar(prev => prev + 1);
   }
 
   return (
     <div className="container">
-      <h1>Manutenções</h1>
-      <ManutencaoForm onManutencaoCriada={atualizar} />
-      <ManutencaoList key={refresh} />
+      <h1>Gestão de Manutenções</h1>
+      <ManutencaoForm onManutencaoCriada={handleManutencaoCriada} />
+      <ManutencaoList key={atualizar} />
     </div>
   );
 }

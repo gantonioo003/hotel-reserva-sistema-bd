@@ -1,0 +1,3 @@
+@echo off
+echo Iniciando o backend...
+call mvnw spring-boot:run 

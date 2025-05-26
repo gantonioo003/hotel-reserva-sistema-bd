@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getHospedes, getQuartos, createReserva } from "../api/fakeApi";
+import { reservaService, hospedeService, quartoService } from "../api/services";
 import { toast } from "react-toastify";
 
 function ReservaForm({ onReservaCriada }) {
@@ -14,10 +14,25 @@ function ReservaForm({ onReservaCriada }) {
 
   const [hospedes, setHospedes] = useState([]);
   const [quartos, setQuartos] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getHospedes().then(setHospedes);
-    getQuartos().then(setQuartos);
+    async function carregar() {
+      try {
+        setLoading(true);
+        const [hospedesRes, quartosRes] = await Promise.all([
+          hospedeService.getAll(),
+          quartoService.getAll()
+        ]);
+        setHospedes(hospedesRes.data);
+        setQuartos(quartosRes.data);
+      } catch (error) {
+        toast.error("Erro ao carregar dados: " + error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    carregar();
   }, []);
 
   function handleChange(e) {
@@ -25,9 +40,11 @@ function ReservaForm({ onReservaCriada }) {
     setForm((prev) => ({ ...prev, [name]: value }));
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    createReserva(form).then(() => {
+    try {
+      setLoading(true);
+      await reservaService.create(form);
       onReservaCriada();
       setForm({
         dataEntrada: "",
@@ -38,27 +55,86 @@ function ReservaForm({ onReservaCriada }) {
         valor: 500
       });
       toast.success("✅ Reserva criada com sucesso!");
-    });
+    } catch (error) {
+      toast.error("Erro ao criar reserva: " + error.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (loading) {
+    return <div>Carregando...</div>;
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input type="date" name="dataEntrada" value={form.dataEntrada} onChange={handleChange} required />
-      <input type="date" name="dataSaida" value={form.dataSaida} onChange={handleChange} required />
-      <input type="number" name="qtdPessoas" value={form.qtdPessoas} onChange={handleChange} required />
-      <select name="idHospede" value={form.idHospede} onChange={handleChange} required>
-        <option value="">Selecione o Hóspede</option>
-        {hospedes.map((h) => (
-          <option key={h.idPessoa} value={h.idPessoa}>{h.nome}</option>
-        ))}
-      </select>
-      <select name="idQuarto" value={form.idQuarto} onChange={handleChange} required>
-        <option value="">Selecione o Quarto</option>
-        {quartos.map((q) => (
-          <option key={q.idQuarto} value={q.idQuarto}>{q.numero} - {q.tipo}</option>
-        ))}
-      </select>
-      <button type="submit">Reservar</button>
+    <form onSubmit={handleSubmit} className="form-card">
+      <h3>Nova Reserva</h3>
+      <div className="form-group">
+        <label>Data de Entrada:</label>
+        <input
+          type="date"
+          name="dataEntrada"
+          value={form.dataEntrada}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label>Data de Saída:</label>
+        <input
+          type="date"
+          name="dataSaida"
+          value={form.dataSaida}
+          onChange={handleChange}
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label>Quantidade de Pessoas:</label>
+        <input
+          type="number"
+          name="qtdPessoas"
+          value={form.qtdPessoas}
+          onChange={handleChange}
+          min="1"
+          required
+        />
+      </div>
+      <div className="form-group">
+        <label>Hóspede:</label>
+        <select
+          name="idHospede"
+          value={form.idHospede}
+          onChange={handleChange}
+          required
+        >
+          <option value="">Selecione o Hóspede</option>
+          {hospedes.map((h) => (
+            <option key={h.idPessoa} value={h.idPessoa}>
+              {h.nome}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="form-group">
+        <label>Quarto:</label>
+        <select
+          name="idQuarto"
+          value={form.idQuarto}
+          onChange={handleChange}
+          required
+        >
+          <option value="">Selecione o Quarto</option>
+          {quartos.map((q) => (
+            <option key={q.idQuarto} value={q.idQuarto}>
+              {q.numero} - {q.tipo}
+            </option>
+          ))}
+        </select>
+      </div>
+      <button type="submit" className="btn-primary">
+        Reservar
+      </button>
     </form>
   );
 }

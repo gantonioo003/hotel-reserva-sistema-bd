@@ -1,42 +1,87 @@
 import { useState } from "react";
-import { createQuarto } from "../api/fakeApi";
+import { quartoService } from "../api/services";
 import { toast } from "react-toastify";
 
 function QuartoForm({ onQuartoCriado }) {
   const [form, setForm] = useState({
     numero: "",
     tipo: "",
-    capacidade: 1,
-    valorDiaria: "",
-    status: "Disponível"
+    capacidade: "",
+    valorDiaria: ""
   });
+  const [loading, setLoading] = useState(false);
 
   function handleChange(e) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    createQuarto(form).then(() => {
+    try {
+      setLoading(true);
+      await quartoService.create({
+        ...form,
+        capacidade: parseInt(form.capacidade),
+        valorDiaria: parseFloat(form.valorDiaria)
+      });
       onQuartoCriado();
-      setForm({ numero: "", tipo: "", capacidade: 1, valorDiaria: "", status: "Disponível" });
+      setForm({ numero: "", tipo: "", capacidade: "", valorDiaria: "" });
       toast.success("✅ Quarto cadastrado com sucesso!");
-    });
+    } catch (error) {
+      toast.error("Erro ao cadastrar quarto: " + error.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="form-control">
-      <input name="numero" placeholder="Número" value={form.numero} onChange={handleChange} required />
-      <input name="tipo" placeholder="Tipo" value={form.tipo} onChange={handleChange} required />
-      <input type="number" name="capacidade" placeholder="Capacidade" value={form.capacidade} onChange={handleChange} required />
-      <input type="number" name="valorDiaria" placeholder="Valor da Diária" value={form.valorDiaria} onChange={handleChange} required />
-      <select name="status" value={form.status} onChange={handleChange}>
-        <option>Disponível</option>
-        <option>Ocupado</option>
-        <option>Manutenção</option>
+    <form onSubmit={handleSubmit}>
+      <input
+        name="numero"
+        value={form.numero}
+        onChange={handleChange}
+        placeholder="Número do quarto"
+        required
+        disabled={loading}
+      />
+      <select
+        name="tipo"
+        value={form.tipo}
+        onChange={handleChange}
+        required
+        disabled={loading}
+      >
+        <option value="">Selecione o tipo</option>
+        <option value="Simples">Simples</option>
+        <option value="Duplo">Duplo</option>
+        <option value="Suíte">Suíte</option>
+        <option value="Luxo">Luxo</option>
       </select>
-      <button type="submit">Cadastrar</button>
+      <input
+        type="number"
+        name="capacidade"
+        value={form.capacidade}
+        onChange={handleChange}
+        placeholder="Capacidade"
+        required
+        min="1"
+        disabled={loading}
+      />
+      <input
+        type="number"
+        name="valorDiaria"
+        value={form.valorDiaria}
+        onChange={handleChange}
+        placeholder="Valor da diária"
+        required
+        min="0"
+        step="0.01"
+        disabled={loading}
+      />
+      <button type="submit" disabled={loading}>
+        {loading ? "Cadastrando..." : "Cadastrar"}
+      </button>
     </form>
   );
 }

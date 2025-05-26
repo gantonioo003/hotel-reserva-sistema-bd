@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import {
-  getQuartos,
-  getHospedes,
-  getReservas,
-  getPagamentos,
-  getManutencoes
-} from "../api/fakeApi";
+  quartoService,
+  hospedeService,
+  reservaService,
+  pagamentoService,
+  manutencaoService
+} from "../api/services";
+import { toast } from "react-toastify";
 
 import {
   PieChart,
@@ -24,28 +25,45 @@ function DashboardPage() {
     faturamento: 0,
     manutencoes: 0
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    Promise.all([
-      getQuartos(),
-      getHospedes(),
-      getReservas(),
-      getPagamentos(),
-      getManutencoes()
-    ]).then(([q, h, r, p, m]) => {
-      const disponiveis = q.filter((q) => q.status === "Disponível").length;
-      const manutencaoCount = q.filter((q) => q.status === "Manutenção").length;
-      const totalPagamentos = p.reduce((acc, val) => acc + val.valor, 0);
-      setDados({
-        quartos: q.length,
-        quartosDisponiveis: disponiveis,
-        hospedes: h.length,
-        reservas: r.length,
-        faturamento: totalPagamentos,
-        manutencoes: manutencaoCount
-      });
-    });
+    async function carregar() {
+      try {
+        setLoading(true);
+        const [quartosRes, hospedesRes, reservasRes, pagamentosRes, manutencoesRes] = await Promise.all([
+          quartoService.getAll(),
+          hospedeService.getAll(),
+          reservaService.getAll(),
+          pagamentoService.getAll(),
+          manutencaoService.getAll()
+        ]);
+
+        const quartos = quartosRes.data;
+        const disponiveis = quartos.filter((q) => q.status === "Disponível").length;
+        const manutencaoCount = quartos.filter((q) => q.status === "Manutenção").length;
+        const totalPagamentos = pagamentosRes.data.reduce((acc, val) => acc + val.valor, 0);
+
+        setDados({
+          quartos: quartos.length,
+          quartosDisponiveis: disponiveis,
+          hospedes: hospedesRes.data.length,
+          reservas: reservasRes.data.length,
+          faturamento: totalPagamentos,
+          manutencoes: manutencaoCount
+        });
+      } catch (error) {
+        toast.error("Erro ao carregar dados do dashboard: " + error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    carregar();
   }, []);
+
+  if (loading) {
+    return <div>Carregando...</div>;
+  }
 
   return (
     <div className="container">
