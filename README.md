@@ -128,14 +128,16 @@ npm run dev
 
 ---
 
-## 🔁 Exemplos de Endpoints (Pessoa)
+## 🔁 Exemplos de Endpoints – Pessoa
 
-GET     /api/pessoas
-POST    /api/pessoas
-PUT     /api/pessoas/{id}
-DELETE  /api/pessoas/{id}
+| Método | Endpoint               | Descrição            |
+|--------|------------------------|------------------------|
+| GET    | `/api/pessoas`         | Lista todas as pessoas |
+| POST   | `/api/pessoas`         | Cria uma nova pessoa   |
+| PUT    | `/api/pessoas/{id}`    | Atualiza uma pessoa    |
+| DELETE | `/api/pessoas/{id}`    | Remove uma pessoa      |
 
-Exemplo de JSON:
+### 🧾 Exemplo de JSON (POST/PUT)
 
 ```json
 {
@@ -145,9 +147,7 @@ Exemplo de JSON:
   "dataNascimento": "1990-05-15",
   "endereco": "Av. Principal, 123"
 }
-```
 
----
 
 ## 👨‍💻 Autores
 
