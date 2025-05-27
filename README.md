@@ -10,7 +10,7 @@ O sistema simula as operações de um hotel, permitindo o gerenciamento completo
 
 * Hóspedes, Funcionários e seus relacionamentos
 * Quartos, Reservas, Pagamentos
-* Manutenções e Execuções de serviços
+* Manutenções e Execuções de serviços,
 * Avaliações dos hóspedes
 * Serviços adicionais
 
