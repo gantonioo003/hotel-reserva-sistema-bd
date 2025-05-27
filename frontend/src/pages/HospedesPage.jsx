@@ -1,4 +1,8 @@
 import { useState } from "react";
+import { hospedeService } from "../api/services";
+import { toast } from "react-toastify";
+import Layout from "../components/Layout";
+import { FaUsers, FaEdit, FaTrash } from "react-icons/fa";
 import HospedeForm from "../components/HospedeForm";
 import HospedeList from "../components/HospedeList";
 
@@ -10,11 +14,13 @@ function HospedesPage() {
   }
 
   return (
-    <div className="container">
-      <h1>Gestão de Hóspedes</h1>
-      <HospedeForm onHospedeCriado={atualizar} />
-      <HospedeList key={refresh} />
-    </div>
+    <Layout>
+      <div className="page-card">
+        <h1>Gestão de Hóspedes</h1>
+        <HospedeForm onHospedeCriado={atualizar} />
+        <HospedeList key={refresh} />
+      </div>
+    </Layout>
   );
 }
 

@@ -1,4 +1,8 @@
 import { useState } from "react";
+import { reservaService } from "../api/services";
+import { toast } from "react-toastify";
+import Layout from "../components/Layout";
+import { FaCalendarAlt, FaEdit, FaTrash } from "react-icons/fa";
 import ReservaForm from "../components/ReservaForm";
 import ReservaList from "../components/ReservaList";
 
@@ -10,11 +14,13 @@ function ReservasPage() {
   };
 
   return (
-    <div className="container">
-      <h1>Gestão de Reservas</h1>
-      <ReservaForm onReservaCriada={handleReservaCriada} />
-      <ReservaList key={atualizar} />
-    </div>
+    <Layout>
+      <div className="page-card">
+        <h1>Gestão de Reservas</h1>
+        <ReservaForm onReservaCriada={handleReservaCriada} />
+        <ReservaList key={atualizar} />
+      </div>
+    </Layout>
   );
 }
 

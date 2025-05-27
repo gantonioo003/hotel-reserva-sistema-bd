@@ -13,25 +13,25 @@ CREATE TABLE Telefone (
     telefone_PK INT PRIMARY KEY,
     telefone VARCHAR(15),
     idPessoa INT,
-    FOREIGN KEY (idPessoa) REFERENCES Pessoa(idPessoa)
+    FOREIGN KEY (idPessoa) REFERENCES Pessoa(idPessoa) ON DELETE CASCADE
 );
 
 CREATE TABLE Hospede (
     idPessoa INT PRIMARY KEY,
-    FOREIGN KEY (idPessoa) REFERENCES Pessoa(idPessoa)
+    FOREIGN KEY (idPessoa) REFERENCES Pessoa(idPessoa) ON DELETE CASCADE
 );
 
 CREATE TABLE Funcionario (
     idPessoa INT PRIMARY KEY,
-    FOREIGN KEY (idPessoa) REFERENCES Pessoa(idPessoa)
+    FOREIGN KEY (idPessoa) REFERENCES Pessoa(idPessoa) ON DELETE CASCADE
 );
 
 CREATE TABLE Supervisiona (
     idFuncionario_supervisor INT,
     idFuncionario_supervisionado INT,
     PRIMARY KEY (idFuncionario_supervisor, idFuncionario_supervisionado),
-    FOREIGN KEY (idFuncionario_supervisor) REFERENCES Funcionario(idPessoa),
-    FOREIGN KEY (idFuncionario_supervisionado) REFERENCES Funcionario(idPessoa)
+    FOREIGN KEY (idFuncionario_supervisor) REFERENCES Funcionario(idPessoa) ON DELETE CASCADE,
+    FOREIGN KEY (idFuncionario_supervisionado) REFERENCES Funcionario(idPessoa) ON DELETE CASCADE
 );
 
 CREATE TABLE Quarto (
@@ -56,17 +56,17 @@ CREATE TABLE Executa (
     idManutencao INT,
     idQuarto INT,
     PRIMARY KEY (idFuncionario, idManutencao, idQuarto),
-    FOREIGN KEY (idFuncionario) REFERENCES Funcionario(idPessoa),
+    FOREIGN KEY (idFuncionario) REFERENCES Funcionario(idPessoa) ON DELETE CASCADE,
     FOREIGN KEY (idManutencao) REFERENCES Manutencao(id_manutencao),
     FOREIGN KEY (idQuarto) REFERENCES Quarto(idQuarto)
 );
 
 CREATE TABLE Pagamento (
-idPagamento INT AUTO_INCREMENT PRIMARY KEY,
-forma VARCHAR(20),
-valor DECIMAL(10,2),
-data DATE,
-status VARCHAR(20)
+    idPagamento INT AUTO_INCREMENT PRIMARY KEY,
+    forma VARCHAR(20),
+    valor DECIMAL(10,2),
+    data DATE,
+    status VARCHAR(20)
 );
 
 CREATE TABLE Reserva (
@@ -77,7 +77,7 @@ CREATE TABLE Reserva (
     idHospede INT,
     idPagamento INT,
     idQuarto INT,
-    FOREIGN KEY (idHospede) REFERENCES Hospede(idPessoa),
+    FOREIGN KEY (idHospede) REFERENCES Hospede(idPessoa) ON DELETE CASCADE,
     FOREIGN KEY (idPagamento) REFERENCES Pagamento(idPagamento),
     FOREIGN KEY (idQuarto) REFERENCES Quarto(idQuarto)
 );
@@ -87,7 +87,7 @@ CREATE TABLE Avaliacao (
     comentario TEXT,
     nota INT,
     idReserva INT,
-    FOREIGN KEY (idReserva) REFERENCES Reserva(idReserva)
+    FOREIGN KEY (idReserva) REFERENCES Reserva(idReserva) ON DELETE CASCADE
 );
 
 CREATE TABLE Servico (
@@ -102,5 +102,5 @@ CREATE TABLE Possui (
     idReserva INT,
     PRIMARY KEY (idServico, idReserva),
     FOREIGN KEY (idServico) REFERENCES Servico(idServico),
-    FOREIGN KEY (idReserva) REFERENCES Reserva(idReserva)
+    FOREIGN KEY (idReserva) REFERENCES Reserva(idReserva) ON DELETE CASCADE
 );
