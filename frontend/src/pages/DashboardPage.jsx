@@ -135,8 +135,7 @@ function DashboardPage() {
                 isAnimationActive={true}
                 data={[
                   { name: "Disponível", value: dados.quartosDisponiveis },
-                  { name: "Ocupado", value: dados.quartos - dados.quartosDisponiveis - dados.manutencoes },
-                  { name: "Manutenção", value: dados.manutencoes }
+                  { name: "Ocupado", value: dados.quartos - dados.quartosDisponiveis - dados.manutencoes }
                 ]}
                 cx="50%"
                 cy="50%"
@@ -146,7 +145,6 @@ function DashboardPage() {
               >
                 <Cell fill="#2ecc71" /> {/* Disponível */}
                 <Cell fill="#e74c3c" /> {/* Ocupado */}
-                <Cell fill="#f1c40f" /> {/* Manutenção */}
               </Pie>
               <Legend />
             </PieChart>
