@@ -32,6 +32,7 @@ function DashboardPage() {
     reservas: 0,
     faturamento: 0,
     manutencoes: 0,
+    taxaOcupacao: 0,
     faturamentoPorMes: [],
     reservasPorTipo: [],
     ocupacaoPorMes: []
@@ -52,8 +53,10 @@ function DashboardPage() {
 
         const quartos = quartosRes.data;
         const totalQuartos = 30; // Total predefinido de quartos
-        const disponiveis = totalQuartos - quartos.filter((q) => q.status === "Ocupado").length;
+        const ocupados = quartos.filter((q) => q.status === "Ocupado").length;
         const manutencaoCount = quartos.filter((q) => q.status === "Manutenção").length;
+        const disponiveis = totalQuartos - ocupados - manutencaoCount;
+        const taxaOcupacao = (ocupados / totalQuartos) * 100;
         const totalPagamentos = pagamentosRes.data.reduce((acc, val) => acc + val.valor, 0);
 
         // Análise de faturamento por mês
@@ -86,6 +89,7 @@ function DashboardPage() {
           reservas: reservasRes.data.length,
           faturamento: totalPagamentos,
           manutencoes: manutencaoCount,
+          taxaOcupacao: taxaOcupacao,
           faturamentoPorMes: Object.entries(faturamentoPorMes).map(([mes, valor]) => ({
             mes,
             valor: parseFloat(valor.toFixed(2))
@@ -122,7 +126,7 @@ function DashboardPage() {
         <Card titulo="Reservas" valor={dados.reservas} />
         <Card titulo="Faturamento" valor={`R$ ${dados.faturamento.toFixed(2)}`} />
         <Card titulo="Manutenções" valor={dados.manutencoes} />
-        <Card titulo="Taxa de Ocupação" valor={`${((dados.quartos - dados.quartosDisponiveis - dados.manutencoes) / dados.quartos * 100).toFixed(1)}%`} />
+        <Card titulo="Taxa de Ocupação" valor={`${dados.taxaOcupacao.toFixed(1)}%`} />
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: "2rem" }}>
