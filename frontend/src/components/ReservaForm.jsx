@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
-import { reservaService, hospedeService, quartoService } from "../api/services";
+import {
+  reservaService,
+  hospedeService,
+  quartoService,
+  pessoaService,
+} from "../api/services";
 import { toast } from "react-toastify";
 
 function ReservaForm({ onReservaCriada }) {
@@ -9,23 +14,26 @@ function ReservaForm({ onReservaCriada }) {
     qtdPessoas: 1,
     idHospede: "",
     idQuarto: "",
-    valor: 500
+    formaPagamento: "",
   });
 
   const [hospedes, setHospedes] = useState([]);
   const [quartos, setQuartos] = useState([]);
+  const [pessoas, setPessoas] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async function carregar() {
       try {
         setLoading(true);
-        const [hospedesRes, quartosRes] = await Promise.all([
+        const [hospedesRes, quartosRes, pessoasRes] = await Promise.all([
           hospedeService.getAll(),
-          quartoService.getAll()
+          quartoService.getAll(),
+          pessoaService.getAll(),
         ]);
         setHospedes(hospedesRes.data);
         setQuartos(quartosRes.data);
+        setPessoas(pessoasRes.data);
       } catch (error) {
         toast.error("Erro ao carregar dados: " + error.message);
       } finally {
@@ -34,6 +42,10 @@ function ReservaForm({ onReservaCriada }) {
     }
     carregar();
   }, []);
+
+  function getPessoa(id) {
+    return pessoas.find((p) => p.idPessoa === id) || {};
+  }
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -52,7 +64,7 @@ function ReservaForm({ onReservaCriada }) {
         qtdPessoas: 1,
         idHospede: "",
         idQuarto: "",
-        valor: 500
+        formaPagamento: "",
       });
       toast.success("✅ Reserva criada com sucesso!");
     } catch (error) {
@@ -109,11 +121,14 @@ function ReservaForm({ onReservaCriada }) {
           required
         >
           <option value="">Selecione o Hóspede</option>
-          {hospedes.map((h) => (
-            <option key={h.idPessoa} value={h.idPessoa}>
-              {h.nome}
-            </option>
-          ))}
+          {hospedes.map((h) => {
+            const p = getPessoa(h.idPessoa);
+            return (
+              <option key={h.idPessoa} value={h.idPessoa}>
+                {p.nome} — {p.cpf}
+              </option>
+            );
+          })}
         </select>
       </div>
       <div className="form-group">
@@ -130,6 +145,21 @@ function ReservaForm({ onReservaCriada }) {
               {q.numero} - {q.tipo}
             </option>
           ))}
+        </select>
+      </div>
+      <div className="form-group">
+        <label>Forma de Pagamento:</label>
+        <select
+          name="formaPagamento"
+          value={form.formaPagamento}
+          onChange={handleChange}
+          required
+        >
+          <option value="">Selecione a forma</option>
+          <option value="pix">Pix</option>
+          <option value="credito">Crédito</option>
+          <option value="debito">Débito</option>
+          <option value="dinheiro">Dinheiro</option>
         </select>
       </div>
       <button type="submit" className="btn-primary">

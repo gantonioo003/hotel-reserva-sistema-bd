@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { manutencaoService, funcionarioService, quartoService } from "../api/services";
+import { useState } from "react";
+import { manutencaoService } from "../api/services";
 import { toast } from "react-toastify";
 
 function ManutencaoForm({ onManutencaoCriada }) {
@@ -7,34 +7,10 @@ function ManutencaoForm({ onManutencaoCriada }) {
     data: "",
     tipo_servico: "",
     descricao: "",
-    custo: "",
-    idFuncionario: "",
-    idQuarto: ""
+    custo: ""
   });
 
-  const [funcionarios, setFuncionarios] = useState([]);
-  const [quartos, setQuartos] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  async function carregarDados() {
-    try {
-      setLoading(true);
-      const [funcionariosRes, quartosRes] = await Promise.all([
-        funcionarioService.getAll(),
-        quartoService.getAll()
-      ]);
-      setFuncionarios(funcionariosRes.data);
-      setQuartos(quartosRes.data);
-    } catch (error) {
-      toast.error("Erro ao carregar dados: " + error.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    carregarDados();
-  }, []);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -47,19 +23,10 @@ function ManutencaoForm({ onManutencaoCriada }) {
       setLoading(true);
       await manutencaoService.create({
         ...form,
-        custo: parseFloat(form.custo),
-        idFuncionario: parseInt(form.idFuncionario),
-        idQuarto: parseInt(form.idQuarto)
+        custo: parseFloat(form.custo)
       });
       onManutencaoCriada();
-      setForm({
-        data: "",
-        tipo_servico: "",
-        descricao: "",
-        custo: "",
-        idFuncionario: "",
-        idQuarto: ""
-      });
+      setForm({ data: "", tipo_servico: "", descricao: "", custo: "" });
       toast.success("✅ Manutenção registrada com sucesso!");
     } catch (error) {
       toast.error("Erro ao registrar manutenção: " + error.message);
@@ -87,9 +54,11 @@ function ManutencaoForm({ onManutencaoCriada }) {
       >
         <option value="">Selecione o tipo de serviço</option>
         <option value="Limpeza">Limpeza</option>
-        <option value="Reparo">Reparo</option>
-        <option value="Manutenção Preventiva">Manutenção Preventiva</option>
-        <option value="Manutenção Corretiva">Manutenção Corretiva</option>
+        <option value="Elétrica">Elétrica</option>
+        <option value="Hidráulica">Hidráulica</option>
+        <option value="Pintura">Pintura</option>
+        <option value="Troca de Móveis">Troca de Móveis</option>
+        <option value="Outros">Outros</option>
       </select>
       <input
         name="descricao"
@@ -110,30 +79,6 @@ function ManutencaoForm({ onManutencaoCriada }) {
         step="0.01"
         disabled={loading}
       />
-      <select
-        name="idFuncionario"
-        value={form.idFuncionario}
-        onChange={handleChange}
-        required
-        disabled={loading}
-      >
-        <option value="">Selecione o Funcionário</option>
-        {funcionarios.map((f) => (
-          <option key={f.idPessoa} value={f.idPessoa}>{f.nome}</option>
-        ))}
-      </select>
-      <select
-        name="idQuarto"
-        value={form.idQuarto}
-        onChange={handleChange}
-        required
-        disabled={loading}
-      >
-        <option value="">Selecione o Quarto</option>
-        {quartos.map((q) => (
-          <option key={q.idQuarto} value={q.idQuarto}>Quarto {q.numero} - {q.tipo}</option>
-        ))}
-      </select>
       <button type="submit" disabled={loading}>
         {loading ? "Registrando..." : "Registrar"}
       </button>

@@ -32,12 +32,18 @@ function ReservaList() {
   }, []);
 
   function nomeHospede(id) {
-    return hospedes.find((h) => h.idPessoa === id)?.nome || "—";
+    const idNum = parseInt(id);
+    const hospede = hospedes.find((h) => parseInt(h.idPessoa) === idNum);
+    return hospede ? hospede.nome : "—";
   }
 
   function quartoInfo(id) {
     const q = quartos.find((q) => q.idQuarto === id);
-    return q ? `${q.numero} - ${q.tipo}` : "—";
+    return q ? q.numero + " - " + q.tipo : "—";
+  }
+
+  function formatarDataLocal(data) {
+    return new Date(data + "T00:00:00").toLocaleDateString("pt-BR");
   }
 
   if (loading) {
@@ -54,16 +60,13 @@ function ReservaList() {
           {reservas.map((r) => (
             <li key={r.idReserva} className="card">
               <div>
-                <strong>Hóspede:</strong> {nomeHospede(r.idHospede)}
-              </div>
-              <div>
                 <strong>Quarto:</strong> {quartoInfo(r.idQuarto)}
               </div>
               <div>
-                <strong>Check-in:</strong> {new Date(r.dataEntrada).toLocaleDateString("pt-BR")}
+                <strong>Check-in:</strong> {formatarDataLocal(r.dataEntrada)}
               </div>
               <div>
-                <strong>Check-out:</strong> {new Date(r.dataSaida).toLocaleDateString("pt-BR")}
+                <strong>Check-out:</strong> {formatarDataLocal(r.dataSaida)}
               </div>
               <div>
                 <strong>Hóspedes:</strong> {r.qtdPessoas}

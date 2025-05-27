@@ -22,7 +22,7 @@ export const hospedeService = {
 export const funcionarioService = {
     getAll: () => api.get('/funcionarios'),
     getById: (id) => api.get(`/funcionarios/${id}`),
-    create: (data) => api.post('/funcionarios', data),
+    create: (idPessoa) => api.post('/funcionarios', { idPessoa }),
     update: (id, data) => api.put(`/funcionarios/${id}`, data),
     delete: (id) => api.delete(`/funcionarios/${id}`),
 };

@@ -8,6 +8,7 @@ import java.time.LocalDate;
 public class Reserva {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idReserva")
     private Integer idReserva;
 
@@ -29,7 +30,11 @@ public class Reserva {
     @Column(name = "idQuarto")
     private Integer idQuarto;
 
+    @Transient
+    private String formaPagamento; // não vai para o banco, só para captura no frontend
+
     // Getters e Setters
+
     public Integer getIdReserva() {
         return idReserva;
     }
@@ -84,5 +89,13 @@ public class Reserva {
 
     public void setIdQuarto(Integer idQuarto) {
         this.idQuarto = idQuarto;
+    }
+
+    public String getFormaPagamento() {
+        return formaPagamento;
+    }
+
+    public void setFormaPagamento(String formaPagamento) {
+        this.formaPagamento = formaPagamento;
     }
 }

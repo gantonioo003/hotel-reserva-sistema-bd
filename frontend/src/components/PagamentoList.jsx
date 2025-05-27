@@ -22,6 +22,11 @@ function PagamentoList() {
     carregar();
   }, []);
 
+  function formatarDataLocal(data) {
+    const localDate = new Date(data + "T00:00:00");
+    return localDate.toLocaleDateString("pt-BR");
+  }
+
   if (loading) {
     return <div>Carregando...</div>;
   }
@@ -60,8 +65,7 @@ function PagamentoList() {
                 </span>
               </div>
               <div>
-                <strong>Data:</strong>{" "}
-                {new Date(p.data).toLocaleDateString("pt-BR")}
+                <strong>Data:</strong> {formatarDataLocal(p.data)}
               </div>
             </li>
           ))}

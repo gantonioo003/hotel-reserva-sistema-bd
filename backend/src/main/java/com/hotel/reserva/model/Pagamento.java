@@ -1,6 +1,7 @@
 package com.hotel.reserva.model;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -8,6 +9,7 @@ import java.time.LocalDate;
 public class Pagamento {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idPagamento")
     private Integer idPagamento;
 
@@ -15,7 +17,7 @@ public class Pagamento {
     private String forma;
 
     @Column(name = "valor")
-    private Double valor;
+    private BigDecimal valor;
 
     @Column(name = "data")
     private LocalDate data;
@@ -40,11 +42,11 @@ public class Pagamento {
         this.forma = forma;
     }
 
-    public Double getValor() {
+    public BigDecimal getValor() {
         return valor;
     }
 
-    public void setValor(Double valor) {
+    public void setValor(BigDecimal valor) {
         this.valor = valor;
     }
 

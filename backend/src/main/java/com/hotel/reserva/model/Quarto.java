@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 public class Quarto {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idQuarto")
     private Integer idQuarto;
 
@@ -23,8 +24,8 @@ public class Quarto {
     @Column(name = "valorDiaria")
     private BigDecimal valorDiaria;
 
-    @Column(name = "status")
-    private String status;
+    @Column(name = "status", nullable = false)
+    private String status = "livre"; // valor padrão
 
     // Getters e Setters
     public Integer getIdQuarto() {

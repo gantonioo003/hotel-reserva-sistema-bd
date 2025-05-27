@@ -4,11 +4,15 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+
 @Entity
 @Table(name = "Manutencao")
 public class Manutencao {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_manutencao")
     private Integer id;
 
@@ -16,6 +20,7 @@ public class Manutencao {
     private LocalDate data;
 
     @Column(name = "tipo_servico")
+    @JsonProperty("tipo_servico")
     private String tipoServico;
 
     @Column(name = "descricao")

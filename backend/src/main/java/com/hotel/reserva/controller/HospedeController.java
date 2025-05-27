@@ -1,8 +1,16 @@
 package com.hotel.reserva.controller;
 
 import com.hotel.reserva.model.Hospede;
+import com.hotel.reserva.model.Possui;
+import com.hotel.reserva.model.Reserva;
+import com.hotel.reserva.model.Avaliacao;
 import com.hotel.reserva.repository.HospedeRepository;
+import com.hotel.reserva.repository.ReservaRepository;
+import com.hotel.reserva.repository.AvaliacaoRepository;
+import com.hotel.reserva.repository.PossuiRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,6 +23,15 @@ public class HospedeController {
 
     @Autowired
     private HospedeRepository hospedeRepository;
+
+    @Autowired
+    private ReservaRepository reservaRepository;
+
+    @Autowired
+    private AvaliacaoRepository avaliacaoRepository;
+
+    @Autowired
+    private PossuiRepository possuiRepository;
 
     @GetMapping
     public List<Hospede> listarTodos() {
@@ -38,7 +55,30 @@ public class HospedeController {
     }
 
     @DeleteMapping("/{id}")
-    public void deletar(@PathVariable Integer id) {
+    public ResponseEntity<Void> deletar(@PathVariable Integer id) {
+        // Buscar reservas do hóspede
+        List<Reserva> reservas = reservaRepository.findByIdHospede(id);
+
+        for (Reserva reserva : reservas) {
+            Integer idReserva = reserva.getIdReserva();
+
+            // Deletar avaliações da reserva
+            List<Avaliacao> avaliacoes = avaliacaoRepository.findAll().stream()
+                .filter(a -> a.getIdReserva().equals(idReserva))
+                .toList();
+            avaliacaoRepository.deleteAll(avaliacoes);
+
+            // Deletar registros da tabela Possui da reserva
+            List<Possui> possuis = possuiRepository.findByIdReserva(idReserva);
+            possuiRepository.deleteAll(possuis);
+        }
+
+        // Deletar reservas
+        reservaRepository.deleteAll(reservas);
+
+        // Deletar hóspede
         hospedeRepository.deleteById(id);
+
+        return ResponseEntity.ok().build();
     }
 }

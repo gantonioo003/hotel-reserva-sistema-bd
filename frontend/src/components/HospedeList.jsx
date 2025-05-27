@@ -1,18 +1,23 @@
 import { useEffect, useState } from "react";
-import { hospedeService } from "../api/services";
+import { hospedeService, pessoaService } from "../api/services";
 import PessoaEditForm from "./PessoaEditForm";
 import { toast } from "react-toastify";
 
 function HospedeList() {
   const [hospedes, setHospedes] = useState([]);
+  const [pessoas, setPessoas] = useState([]);
   const [editandoId, setEditandoId] = useState(null);
   const [loading, setLoading] = useState(false);
 
   async function carregar() {
     try {
       setLoading(true);
-      const response = await hospedeService.getAll();
-      setHospedes(response.data);
+      const [hospedesRes, pessoasRes] = await Promise.all([
+        hospedeService.getAll(),
+        pessoaService.getAll(),
+      ]);
+      setHospedes(hospedesRes.data);
+      setPessoas(pessoasRes.data);
     } catch (error) {
       toast.error("Erro ao carregar hóspedes: " + error.message);
     } finally {
@@ -24,10 +29,12 @@ function HospedeList() {
     carregar();
   }, []);
 
+  function getPessoa(idPessoa) {
+    return pessoas.find((p) => p.idPessoa === idPessoa) || {};
+  }
+
   async function remover(id) {
-    if (!window.confirm("Tem certeza que deseja remover este hóspede?")) {
-      return;
-    }
+    if (!window.confirm("Tem certeza que deseja remover este hóspede?")) return;
 
     try {
       setLoading(true);
@@ -41,9 +48,7 @@ function HospedeList() {
     }
   }
 
-  if (loading) {
-    return <div>Carregando...</div>;
-  }
+  if (loading) return <div>Carregando...</div>;
 
   return (
     <div>
@@ -52,48 +57,45 @@ function HospedeList() {
         <p>Nenhum hóspede cadastrado.</p>
       ) : (
         <ul className="list">
-          {hospedes.map((h) => (
-            <li key={h.idPessoa} className="card">
-              <div className="card-content">
-                <div>
-                  <strong>Nome:</strong> {h.nome}
+          {hospedes.map((h) => {
+            const pessoa = getPessoa(h.idPessoa);
+            return (
+              <li key={h.idPessoa} className="card">
+                <div className="card-content">
+                  <div>
+                    <strong>Nome:</strong> {pessoa.nome}
+                  </div>
+                  <div>
+                    <strong>CPF:</strong> {pessoa.cpf}
+                  </div>
                 </div>
-                <div>
-                  <strong>CPF:</strong> {h.cpf}
+                <div className="card-actions">
+                  <button
+                    onClick={() => remover(h.idPessoa)}
+                    className="btn-danger"
+                  >
+                    Remover
+                  </button>
+                  <button
+                    onClick={() => setEditandoId(h.idPessoa)}
+                    className="btn-secondary"
+                  >
+                    Editar
+                  </button>
                 </div>
-                <div>
-                  <strong>Email:</strong> {h.email}
-                </div>
-                <div>
-                  <strong>Telefone:</strong> {h.telefone}
-                </div>
-              </div>
-              <div className="card-actions">
-                <button
-                  onClick={() => remover(h.idPessoa)}
-                  className="btn-danger"
-                >
-                  Remover
-                </button>
-                <button
-                  onClick={() => setEditandoId(h.idPessoa)}
-                  className="btn-secondary"
-                >
-                  Editar
-                </button>
-              </div>
-              {editandoId === h.idPessoa && (
-                <PessoaEditForm
-                  pessoa={h}
-                  onCancel={() => setEditandoId(null)}
-                  onSave={() => {
-                    setEditandoId(null);
-                    carregar();
-                  }}
-                />
-              )}
-            </li>
-          ))}
+                {editandoId === h.idPessoa && (
+                  <PessoaEditForm
+                    pessoa={pessoa}
+                    onCancel={() => setEditandoId(null)}
+                    onSave={() => {
+                      setEditandoId(null);
+                      carregar();
+                    }}
+                  />
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

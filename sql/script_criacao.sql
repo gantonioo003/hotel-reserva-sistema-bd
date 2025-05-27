@@ -35,18 +35,18 @@ CREATE TABLE Supervisiona (
 );
 
 CREATE TABLE Quarto (
-    idQuarto INT PRIMARY KEY,
+    idQuarto INT AUTO_INCREMENT PRIMARY KEY,
     numero VARCHAR(10),
     tipo VARCHAR(20),
     capacidade INT,
     valorDiaria DECIMAL(10,2),
-    status VARCHAR(20)
+    status VARCHAR(20) NOT NULL DEFAULT 'livre'
 );
 
 CREATE TABLE Manutencao (
-    id_manutencao INT PRIMARY KEY,
+    id_manutencao INT AUTO_INCREMENT PRIMARY KEY,
     data DATE,
-    tipo_servico VARCHAR(100),
+    tipo_servico VARCHAR(50),
     descricao TEXT,
     custo DECIMAL(10,2)
 );
@@ -62,15 +62,15 @@ CREATE TABLE Executa (
 );
 
 CREATE TABLE Pagamento (
-    idPagamento INT PRIMARY KEY,
-    forma VARCHAR(20),
-    valor DECIMAL(10,2),
-    data DATE,
-    status VARCHAR(20)
+idPagamento INT AUTO_INCREMENT PRIMARY KEY,
+forma VARCHAR(20),
+valor DECIMAL(10,2),
+data DATE,
+status VARCHAR(20)
 );
 
 CREATE TABLE Reserva (
-    idReserva INT PRIMARY KEY,
+    idReserva INT AUTO_INCREMENT PRIMARY KEY,
     dataEntrada DATE,
     dataSaida DATE,
     qtdPessoas INT,
