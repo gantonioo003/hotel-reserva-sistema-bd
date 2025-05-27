@@ -13,7 +13,15 @@ import {
   Pie,
   Cell,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  LineChart,
+  Line
 } from "recharts";
 
 function DashboardPage() {
@@ -23,7 +31,10 @@ function DashboardPage() {
     hospedes: 0,
     reservas: 0,
     faturamento: 0,
-    manutencoes: 0
+    manutencoes: 0,
+    faturamentoPorMes: [],
+    reservasPorTipo: [],
+    ocupacaoPorMes: []
   });
   const [loading, setLoading] = useState(false);
 
@@ -44,13 +55,48 @@ function DashboardPage() {
         const manutencaoCount = quartos.filter((q) => q.status === "Manutenção").length;
         const totalPagamentos = pagamentosRes.data.reduce((acc, val) => acc + val.valor, 0);
 
+        // Análise de faturamento por mês
+        const faturamentoPorMes = pagamentosRes.data.reduce((acc, pagamento) => {
+          const mes = new Date(pagamento.data).toLocaleString('pt-BR', { month: 'long' });
+          acc[mes] = (acc[mes] || 0) + pagamento.valor;
+          return acc;
+        }, {});
+
+        // Análise de reservas por tipo de quarto
+        const reservasPorTipo = reservasRes.data.reduce((acc, reserva) => {
+          const quarto = quartos.find(q => q.idQuarto === reserva.idQuarto);
+          if (quarto) {
+            acc[quarto.tipo] = (acc[quarto.tipo] || 0) + 1;
+          }
+          return acc;
+        }, {});
+
+        // Análise de ocupação por mês
+        const ocupacaoPorMes = reservasRes.data.reduce((acc, reserva) => {
+          const mes = new Date(reserva.dataEntrada).toLocaleString('pt-BR', { month: 'long' });
+          acc[mes] = (acc[mes] || 0) + 1;
+          return acc;
+        }, {});
+
         setDados({
           quartos: quartos.length,
           quartosDisponiveis: disponiveis,
           hospedes: hospedesRes.data.length,
           reservas: reservasRes.data.length,
           faturamento: totalPagamentos,
-          manutencoes: manutencaoCount
+          manutencoes: manutencaoCount,
+          faturamentoPorMes: Object.entries(faturamentoPorMes).map(([mes, valor]) => ({
+            mes,
+            valor: parseFloat(valor.toFixed(2))
+          })),
+          reservasPorTipo: Object.entries(reservasPorTipo).map(([tipo, quantidade]) => ({
+            tipo,
+            quantidade
+          })),
+          ocupacaoPorMes: Object.entries(ocupacaoPorMes).map(([mes, quantidade]) => ({
+            mes,
+            quantidade
+          }))
         });
       } catch (error) {
         toast.error("Erro ao carregar dados do dashboard: " + error.message);
@@ -69,39 +115,85 @@ function DashboardPage() {
     <div className="container">
       <h1>Dashboard</h1>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem", marginBottom: "2rem" }}>
         <Card titulo="Quartos" valor={`${dados.quartos} (${dados.quartosDisponiveis} disponíveis)`} />
         <Card titulo="Hóspedes" valor={dados.hospedes} />
         <Card titulo="Reservas" valor={dados.reservas} />
         <Card titulo="Faturamento" valor={`R$ ${dados.faturamento.toFixed(2)}`} />
         <Card titulo="Manutenções" valor={dados.manutencoes} />
+        <Card titulo="Taxa de Ocupação" valor={`${((dados.quartos - dados.quartosDisponiveis - dados.manutencoes) / dados.quartos * 100).toFixed(1)}%`} />
       </div>
 
-      <div style={{ marginTop: "2rem", background: "white", padding: "1rem", borderRadius: "8px" }}>
-        <h3>Status dos Quartos</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <PieChart>
-            <Pie
-              dataKey="value"
-              isAnimationActive={true}
-              data={[
-                { name: "Disponível", value: dados.quartosDisponiveis },
-                { name: "Ocupado", value: dados.quartos - dados.quartosDisponiveis - dados.manutencoes },
-                { name: "Manutenção", value: dados.manutencoes }
-              ]}
-              cx="50%"
-              cy="50%"
-              outerRadius={100}
-              fill="#8884d8"
-              label
-            >
-              <Cell fill="#2ecc71" /> {/* Disponível */}
-              <Cell fill="#e74c3c" /> {/* Ocupado */}
-              <Cell fill="#f1c40f" /> {/* Manutenção */}
-            </Pie>
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: "2rem" }}>
+        {/* Gráfico de Status dos Quartos */}
+        <div className="chart-card">
+          <h3>Status dos Quartos</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                dataKey="value"
+                isAnimationActive={true}
+                data={[
+                  { name: "Disponível", value: dados.quartosDisponiveis },
+                  { name: "Ocupado", value: dados.quartos - dados.quartosDisponiveis - dados.manutencoes },
+                  { name: "Manutenção", value: dados.manutencoes }
+                ]}
+                cx="50%"
+                cy="50%"
+                outerRadius={100}
+                fill="#8884d8"
+                label
+              >
+                <Cell fill="#2ecc71" /> {/* Disponível */}
+                <Cell fill="#e74c3c" /> {/* Ocupado */}
+                <Cell fill="#f1c40f" /> {/* Manutenção */}
+              </Pie>
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Gráfico de Faturamento por Mês */}
+        <div className="chart-card">
+          <h3>Faturamento por Mês</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={dados.faturamentoPorMes}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="mes" />
+              <YAxis />
+              <Tooltip formatter={(value) => `R$ ${value.toFixed(2)}`} />
+              <Bar dataKey="valor" fill="#3498db" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Gráfico de Reservas por Tipo de Quarto */}
+        <div className="chart-card">
+          <h3>Reservas por Tipo de Quarto</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={dados.reservasPorTipo}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="tipo" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="quantidade" fill="#9b59b6" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Gráfico de Ocupação por Mês */}
+        <div className="chart-card">
+          <h3>Ocupação por Mês</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart data={dados.ocupacaoPorMes}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="mes" />
+              <YAxis />
+              <Tooltip />
+              <Line type="monotone" dataKey="quantidade" stroke="#e67e22" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );
@@ -109,15 +201,9 @@ function DashboardPage() {
 
 function Card({ titulo, valor }) {
   return (
-    <div style={{
-      background: "white",
-      padding: "1rem",
-      borderRadius: "8px",
-      boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-      flex: "1 1 200px"
-    }}>
-      <h3 style={{ margin: 0, color: "#2c3e50" }}>{titulo}</h3>
-      <p style={{ fontSize: "1.5rem", marginTop: "0.5rem" }}>{valor}</p>
+    <div className="dashboard-card">
+      <h3>{titulo}</h3>
+      <p>{valor}</p>
     </div>
   );
 }

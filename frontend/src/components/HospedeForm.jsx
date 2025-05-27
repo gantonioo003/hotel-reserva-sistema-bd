@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { pessoaService, hospedeService } from "../api/services";
 import { toast } from "react-toastify";
+import './styles/Dashboard.css';
 
 function HospedeForm({ onHospedeCriado }) {
   const [pessoas, setPessoas] = useState([]);
