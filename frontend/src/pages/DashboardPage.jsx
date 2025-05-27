@@ -52,11 +52,12 @@ function DashboardPage() {
         ]);
 
         const quartos = quartosRes.data;
-        const totalQuartos = 30; // Total predefinido de quartos
+        const totalQuartos = quartos.length;
         const ocupados = quartos.filter((q) => q.status === "Ocupado").length;
         const manutencaoCount = quartos.filter((q) => q.status === "Manutenção").length;
         const disponiveis = totalQuartos - ocupados - manutencaoCount;
-        const taxaOcupacao = (ocupados / totalQuartos) * 100;
+        const quartosDisponiveisParaOcupacao = totalQuartos - manutencaoCount;
+        const taxaOcupacao = quartosDisponiveisParaOcupacao > 0 ? (ocupados / quartosDisponiveisParaOcupacao) * 100 : 0;
         const totalPagamentos = pagamentosRes.data.reduce((acc, val) => acc + val.valor, 0);
 
         // Análise de faturamento por mês
