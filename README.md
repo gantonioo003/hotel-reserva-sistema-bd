@@ -10,7 +10,7 @@ O sistema simula as operações de um hotel, permitindo o gerenciamento completo
 
 * Hóspedes, Funcionários e seus relacionamentos
 * Quartos, Reservas, Pagamentos
-* Manutenções e Execuções de serviços,
+* Manutenções e Execuções de serviços
 * Avaliações dos hóspedes
 * Serviços adicionais
 
@@ -44,7 +44,18 @@ source ./sql/script_criacao.sql;
 source ./sql/script_insercao.sql;
 ```
 
-2. Inicie o backend (Spring Boot)
+2.	Configure o acesso ao banco de dados
+
+No arquivo backend/src/main/resources/application.properties, ajuste as configurações do seu banco conforme sua máquina. Por exemplo:
+
+```bash
+spring.datasource.url=jdbc:mysql://localhost:3306/hotel
+spring.datasource.username=root
+spring.datasource.password=root
+server.port=8080
+```
+
+3. Inicie o backend (Spring Boot)
 
 Abra um terminal e navegue até a pasta backend:
 
@@ -53,7 +64,7 @@ cd backend
 ./mvnw spring-boot:run
 ```
 
-3. Inicie o frontend (React + Vite)
+4. Inicie o frontend (React + Vite)
 
 Abra outro terminal:
 
@@ -63,9 +74,13 @@ npm install
 npm run dev
 ```
 
-4. Acesse no navegador:
+5. Acesse no navegador:
 
 [http://localhost:5173](http://localhost:5173)
+
+Login padrão para acessar o sistema:
+	•	Usuário: admin
+	•	Senha: 123
 
 ---
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { pessoaService } from "../api/services";
 import { toast } from "react-toastify";
 import Layout from "../components/Layout";
@@ -14,6 +14,10 @@ function PessoasPage() {
   const [pessoas, setPessoas] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editando, setEditando] = useState(null);
+
+  useEffect(() => {
+    carregar();
+  }, []);
 
   async function carregar() {
     try {
