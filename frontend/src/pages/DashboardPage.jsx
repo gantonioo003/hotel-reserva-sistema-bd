@@ -51,7 +51,8 @@ function DashboardPage() {
         ]);
 
         const quartos = quartosRes.data;
-        const disponiveis = quartos.filter((q) => q.status === "Disponível").length;
+        const totalQuartos = 30; // Total predefinido de quartos
+        const disponiveis = totalQuartos - quartos.filter((q) => q.status === "Ocupado").length;
         const manutencaoCount = quartos.filter((q) => q.status === "Manutenção").length;
         const totalPagamentos = pagamentosRes.data.reduce((acc, val) => acc + val.valor, 0);
 
@@ -79,7 +80,7 @@ function DashboardPage() {
         }, {});
 
         setDados({
-          quartos: quartos.length,
+          quartos: totalQuartos,
           quartosDisponiveis: disponiveis,
           hospedes: hospedesRes.data.length,
           reservas: reservasRes.data.length,
