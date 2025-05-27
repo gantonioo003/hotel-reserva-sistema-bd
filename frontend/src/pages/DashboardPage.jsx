@@ -50,6 +50,14 @@ function DashboardPage() {
           manutencaoService.getAll()
         ]);
 
+        console.log('Dados recebidos:', {
+          quartos: quartosRes.data,
+          hospedes: hospedesRes.data,
+          reservas: reservasRes.data,
+          pagamentos: pagamentosRes.data,
+          manutencoes: manutencoesRes.data
+        });
+
         const quartos = quartosRes.data;
         const disponiveis = quartos.filter((q) => q.status === "Disponível").length;
         const manutencaoCount = quartos.filter((q) => q.status === "Manutenção").length;
@@ -78,7 +86,7 @@ function DashboardPage() {
           return acc;
         }, {});
 
-        setDados({
+        const dadosProcessados = {
           quartos: quartos.length,
           quartosDisponiveis: disponiveis,
           hospedes: hospedesRes.data.length,
@@ -97,8 +105,12 @@ function DashboardPage() {
             mes,
             quantidade
           }))
-        });
+        };
+
+        console.log('Dados processados:', dadosProcessados);
+        setDados(dadosProcessados);
       } catch (error) {
+        console.error('Erro ao carregar dados:', error);
         toast.error("Erro ao carregar dados do dashboard: " + error.message);
       } finally {
         setLoading(false);
@@ -108,8 +120,94 @@ function DashboardPage() {
   }, []);
 
   if (loading) {
-    return <div>Carregando...</div>;
+    return <div className="loading">Carregando...</div>;
   }
+
+  const renderGraficoStatusQuartos = () => {
+    const data = [
+      { name: "Disponível", value: dados.quartosDisponiveis },
+      { name: "Ocupado", value: dados.quartos - dados.quartosDisponiveis - dados.manutencoes }
+    ];
+
+    if (data.every(item => item.value === 0)) {
+      return <p className="sem-dados">Sem dados de quartos para exibir</p>;
+    }
+
+    return (
+      <ResponsiveContainer width="100%" height={300}>
+        <PieChart>
+          <Pie
+            dataKey="value"
+            isAnimationActive={true}
+            data={data}
+            cx="50%"
+            cy="50%"
+            outerRadius={100}
+            fill="#8884d8"
+            label
+          >
+            <Cell fill="#2ecc71" />
+            <Cell fill="#e74c3c" />
+          </Pie>
+          <Legend />
+        </PieChart>
+      </ResponsiveContainer>
+    );
+  };
+
+  const renderGraficoFaturamento = () => {
+    if (dados.faturamentoPorMes.length === 0) {
+      return <p className="sem-dados">Sem dados de faturamento para exibir</p>;
+    }
+
+    return (
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={dados.faturamentoPorMes}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="mes" />
+          <YAxis />
+          <Tooltip formatter={(value) => `R$ ${value.toFixed(2)}`} />
+          <Bar dataKey="valor" fill="#3498db" />
+        </BarChart>
+      </ResponsiveContainer>
+    );
+  };
+
+  const renderGraficoReservasPorTipo = () => {
+    if (dados.reservasPorTipo.length === 0) {
+      return <p className="sem-dados">Sem dados de reservas por tipo para exibir</p>;
+    }
+
+    return (
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={dados.reservasPorTipo}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="tipo" />
+          <YAxis />
+          <Tooltip />
+          <Bar dataKey="quantidade" fill="#9b59b6" />
+        </BarChart>
+      </ResponsiveContainer>
+    );
+  };
+
+  const renderGraficoOcupacao = () => {
+    if (dados.ocupacaoPorMes.length === 0) {
+      return <p className="sem-dados">Sem dados de ocupação para exibir</p>;
+    }
+
+    return (
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={dados.ocupacaoPorMes}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="mes" />
+          <YAxis />
+          <Tooltip />
+          <Line type="monotone" dataKey="quantidade" stroke="#e67e22" />
+        </LineChart>
+      </ResponsiveContainer>
+    );
+  };
 
   return (
     <div className="container">
@@ -125,72 +223,24 @@ function DashboardPage() {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))", gap: "2rem" }}>
-        {/* Gráfico de Status dos Quartos */}
         <div className="chart-card">
           <h3>Status dos Quartos</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-                dataKey="value"
-                isAnimationActive={true}
-                data={[
-                  { name: "Disponível", value: dados.quartosDisponiveis },
-                  { name: "Ocupado", value: dados.quartos - dados.quartosDisponiveis - dados.manutencoes }
-                ]}
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                fill="#8884d8"
-                label
-              >
-                <Cell fill="#2ecc71" /> {/* Disponível */}
-                <Cell fill="#e74c3c" /> {/* Ocupado */}
-              </Pie>
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
+          {renderGraficoStatusQuartos()}
         </div>
 
-        {/* Gráfico de Faturamento por Mês */}
         <div className="chart-card">
           <h3>Faturamento por Mês</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={dados.faturamentoPorMes}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="mes" />
-              <YAxis />
-              <Tooltip formatter={(value) => `R$ ${value.toFixed(2)}`} />
-              <Bar dataKey="valor" fill="#3498db" />
-            </BarChart>
-          </ResponsiveContainer>
+          {renderGraficoFaturamento()}
         </div>
 
-        {/* Gráfico de Reservas por Tipo de Quarto */}
         <div className="chart-card">
           <h3>Reservas por Tipo de Quarto</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={dados.reservasPorTipo}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="tipo" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="quantidade" fill="#9b59b6" />
-            </BarChart>
-          </ResponsiveContainer>
+          {renderGraficoReservasPorTipo()}
         </div>
 
-        {/* Gráfico de Ocupação por Mês */}
         <div className="chart-card">
           <h3>Ocupação por Mês</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={dados.ocupacaoPorMes}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="mes" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="quantidade" stroke="#e67e22" />
-            </LineChart>
-          </ResponsiveContainer>
+          {renderGraficoOcupacao()}
         </div>
       </div>
     </div>
@@ -207,3 +257,60 @@ function Card({ titulo, valor }) {
 }
 
 export default DashboardPage;
+
+// Estilos CSS
+const styles = `
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    font-size: 1.2rem;
+    color: #666;
+  }
+
+  .sem-dados {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    color: #666;
+    font-style: italic;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin: 0;
+  }
+
+  .chart-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .dashboard-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    min-width: 200px;
+    flex: 1;
+  }
+
+  .dashboard-card h3 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+  }
+
+  .dashboard-card p {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+  }
+`;
+
+// Adiciona os estilos ao documento
+const styleSheet = document.createElement("style");
+styleSheet.innerText = styles;
+document.head.appendChild(styleSheet);
