@@ -79,7 +79,9 @@ npm run dev
 [http://localhost:5173](http://localhost:5173)
 
 Login padrão para acessar o sistema:
+
 	•	Usuário: admin
+
 	•	Senha: 123
 
 ---
@@ -111,6 +113,7 @@ Login padrão para acessar o sistema:
       - pages/
       - App.jsx
       - index.jsx
+  - node_modules/
   - sql/
     - script_criacao.sql
     - script_insercao.sql
@@ -121,6 +124,8 @@ Login padrão para acessar o sistema:
     - modelo_logico.md
     - relatorio_final.pdf
   - README.md
+  - package-lock.json
+  - package.json
 
 
 
