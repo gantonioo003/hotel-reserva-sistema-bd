@@ -6,14 +6,14 @@ export const pessoaService = {
     getById: (id) => api.get(`/pessoas/${id}`),
     create: (data) => api.post('/pessoas', data),
     update: (id, data) => api.put(`/pessoas/${id}`, data),
-    delete: (id) => api.delete(`/pessoas/${id}`),
+    delete: (id) => api.delete(`/pessoas/completo/${id}`),
 };
 
 // Serviços de Hóspede
 export const hospedeService = {
     getAll: () => api.get('/hospedes'),
     getById: (id) => api.get(`/hospedes/${id}`),
-    create: (data) => api.post('/hospedes', data),
+    create: (idPessoa) => api.post('/hospedes', { idPessoa }),
     update: (id, data) => api.put(`/hospedes/${id}`, data),
     delete: (id) => api.delete(`/hospedes/${id}`),
 };
